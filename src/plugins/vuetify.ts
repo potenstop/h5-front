@@ -2,8 +2,13 @@ import Vue from 'vue'
 // @ts-ignore
 import Vuetify from 'vuetify/lib'
 
+// import { LocaleUtil } from 'papio-h5'
+
 Vue.use(Vuetify)
 
-const opts = {}
+// Object.assign(zhHans, LocaleUtil.getJsonByDir('src/locale'))
+
+const opts = {
+}
 
 export default new Vuetify(opts)
