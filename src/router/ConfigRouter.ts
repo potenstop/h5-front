@@ -7,7 +7,8 @@
  * @author yanshaowen
  * @date 2019/9/8 17:07
  */
-import Main from '../components/overall/Main.vue'
+import MainOverall from '@/components/overall/MainOverall.vue'
+import BlankOverall from '@/components/overall/BlankOverall.vue'
 
 /**
  * meta除了原生参数外可配置的参数:
@@ -33,20 +34,36 @@ export default [
   {
     path: '/home',
     name: 'Home',
-    meta: {
-      icon: 'ios-contact-outline',
-      title: '{{ USER_MANAGE }}'
-    },
-    component: Main,
+    component: MainOverall,
     children: [
       {
         path: 'default',
         name: 'DefaultHome',
-        meta: {
-          icon: 'ios-people-outline',
-          title: '{{ USER_DATA_LIST }}'
-        },
         component: () => import('@/views/home/DefaultHome.vue')
+      }
+    ]
+  },
+  {
+    path: '/course',
+    name: 'Course',
+    component: BlankOverall,
+    children: [
+      {
+        path: 'change',
+        name: 'ChangeCourse',
+        component: () => import('@/views/course/ChangeCourse.vue')
+      }
+    ]
+  },
+  {
+    path: '/type',
+    name: 'Type',
+    component: BlankOverall,
+    children: [
+      {
+        path: 'project',
+        name: 'ProjectType',
+        component: () => import('@/views/type/ProjectType.vue')
       }
     ]
   }

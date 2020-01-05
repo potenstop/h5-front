@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import zhHans from 'vuetify/src/locale/zh-Hans'
 import { LocaleUtil } from 'papio-h5'
-import { Navigation } from '@/locale/Navigation'
+import { NavigationLocale } from '@/locale/NavigationLocale'
+import { PageShowLocale } from '@/locale/PageShowLocale'
 
 Vue.use(VueI18n)
 
@@ -14,7 +15,8 @@ let lang = 'zh-CN'
 Vue.config.lang = lang
 console.log('lang', lang)
 const messages = { 'zh-CN': zhHans }
-LocaleUtil.getJsonByClass(Navigation, messages)
+LocaleUtil.getJsonByClass(NavigationLocale, messages)
+LocaleUtil.getJsonByClass(PageShowLocale, messages)
 // vue-i18n 6.x+写法
 Vue.locale = () => {}
 const i18n = new VueI18n({

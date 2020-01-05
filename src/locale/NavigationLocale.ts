@@ -2,7 +2,7 @@
  *
  * 功能描述:
  *
- * @className navigation
+ * @className NavigationLocale
  * @projectName h5-front
  * @author yanshaowen
  * @date 2019/12/30 12:16
@@ -10,7 +10,7 @@
 import { LocaleMapper } from 'papio-h5'
 import { LocaleLangConstant } from '@/common/constant/LocaleLangConstant'
 const prefix = 'NAVIGATION_'
-export class Navigation {
+export class NavigationLocale {
   @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '首页' }])
   public static readonly HOME = prefix + 'HOME'
 

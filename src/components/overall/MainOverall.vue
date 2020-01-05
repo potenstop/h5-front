@@ -31,14 +31,15 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { Navigation } from '@/locale/Navigation'
+import { NavigationLocale } from '@/locale/NavigationLocale'
 @Component
-export default class Main extends Vue {
+export default class MainOverall extends Vue {
+  private name = 'MainOverall'
   private activeBtn = 0
   private btnHeight = 46
-  private localeHome = Navigation.HOME
-  private localeType = Navigation.TYPE
-  private localeMy = Navigation.MY
+  private localeHome = NavigationLocale.HOME
+  private localeType = NavigationLocale.TYPE
+  private localeMy = NavigationLocale.MY
   private created () {
   }
 }
