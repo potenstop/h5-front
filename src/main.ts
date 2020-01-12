@@ -6,10 +6,16 @@ import './registerServiceWorker'
 import vuetify from './plugins/vuetify'
 import axios from 'axios'
 import i18n from '@/plugins/i18n'
+// import message from '@/plugins/message'
+import { Message } from 'view-design'
+import 'view-design/dist/styles/iview.css'
+// @ts-ignore
+import VueTouch from 'vue-touch'
+Vue.use(VueTouch, { name: 'v-touch' })
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
-
+Vue.prototype.$Message = Message
 new Vue({
   router,
   store,

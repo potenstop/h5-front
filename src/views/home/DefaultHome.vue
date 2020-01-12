@@ -29,6 +29,7 @@
       <v-list-item
         v-for="item in items"
         :key="item.title"
+        @click="clickAnswerItem"
       >
         <v-list-item-content>
           <v-list-item-title v-text="item.title"></v-list-item-title>
@@ -37,7 +38,7 @@
 
         <v-list-item-action>
           <v-btn icon>
-            <v-icon color="grey lighten-1">mdi-information</v-icon>
+            <v-icon color="grey lighten-1">mdi-play-circle-outline</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -63,6 +64,9 @@ export default class DefaultHome extends Vue {
   ]
   private changeCourse () {
     this.$router.push('/course/change')
+  }
+  private clickAnswerItem () {
+    this.$router.push('/answer/course')
   }
 }
 </script>

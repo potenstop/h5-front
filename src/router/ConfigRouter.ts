@@ -9,6 +9,7 @@
  */
 import MainOverall from '@/components/overall/MainOverall.vue'
 import BlankOverall from '@/components/overall/BlankOverall.vue'
+import AnswerOverall from '@/components/overall/AnswerOverall.vue'
 
 /**
  * meta除了原生参数外可配置的参数:
@@ -64,6 +65,18 @@ export default [
         path: 'project',
         name: 'ProjectType',
         component: () => import('@/views/type/ProjectType.vue')
+      }
+    ]
+  },
+  {
+    path: '/answer',
+    name: 'Answer',
+    component: AnswerOverall,
+    children: [
+      {
+        path: 'course',
+        name: 'CourseAnswer',
+        component: () => import('@/views/answer/CourseAnswer.vue')
       }
     ]
   }
