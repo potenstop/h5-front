@@ -79,5 +79,17 @@ export default [
         component: () => import('@/views/answer/CourseAnswer.vue')
       }
     ]
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: BlankOverall,
+    children: [
+      {
+        path: 'wxmp',
+        name: 'WxmpLogin',
+        component: () => import('@/views/login/WxmpLogin.vue')
+      }
+    ]
   }
 ]

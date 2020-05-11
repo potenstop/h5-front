@@ -10,5 +10,9 @@ export default {
   /**
    * @description tokenKey
    */
-  tokenKey: 'token'
+  tokenKey: 'token',
+  /**
+   * @description token在Cookie中存储的天数，默认7天
+   */
+  cookieExpires: 7
 }

@@ -7,13 +7,18 @@
     "importHelpers": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false, //在表达式和声明上有隐含的'any'类型时报错。
+    "strictNullChecks": false,
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "jest"
+      "jest",
+      "view-design"
     ],
     "paths": {
       "@/*": [
@@ -31,9 +36,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "types/*.ts"
+    "tests/**/*.ts"
   ],
   "exclude": [
     "node_modules"
