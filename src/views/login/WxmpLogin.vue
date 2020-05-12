@@ -23,7 +23,6 @@ export default class WxmpLogin extends Vue {
       this.$Message.error('链接错误')
       return
     }
-    console.log(query.userId, 222)
     // 按userId进行
     await this.handleWxmpLogin({ userId: query.userId })
     await this.getUserInfo()

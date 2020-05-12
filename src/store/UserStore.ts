@@ -74,7 +74,6 @@ export default {
   actions: {
     // wxmp登录
     async handleWxmpLogin ({ commit }, { userId }) {
-      console.log('111', userId)
       const result = await userApi.byUserIdLogin(userId)
       const data = ApiUtil.getData(result)
       commit('setToken', data)
