@@ -18,6 +18,7 @@ import AnswerOverall from '@/components/overall/AnswerOverall.vue'
  *         显示在侧边栏、面包屑和标签栏的文字
  *         使用'{{ 多语言字段 }}'形式结合多语言使用，例子看多语言的路由配置
  *         可以传入一个回调函数，参数是当前路由对象，例子看动态路由和带参路由
+ *  hasLogin: 是否需要登录
  *  hideInBread: (false) 设为true后此级路由将不会出现在面包屑中，示例看QQ群路由配置
  *  hideInMenu: (false) 设为true后在左侧菜单不会显示该页面选项
  *  notCache: (false) 设为true后页面在切换标签后不会缓存，如果需要缓存，无需设置这个字段，而且需要设置页面组件name属性和路由配置的name一致
@@ -40,6 +41,10 @@ export default [
       {
         path: 'default',
         name: 'DefaultHome',
+        meta: {
+          title: '{{ TITLE_HOME }}',
+          hasLogin: true
+        },
         component: () => import('@/views/home/DefaultHome.vue')
       }
     ]
@@ -52,6 +57,9 @@ export default [
       {
         path: 'change',
         name: 'ChangeCourse',
+        meta: {
+          hasLogin: true
+        },
         component: () => import('@/views/course/ChangeCourse.vue')
       }
     ]
@@ -64,6 +72,9 @@ export default [
       {
         path: 'project',
         name: 'ProjectType',
+        meta: {
+          hasLogin: false
+        },
         component: () => import('@/views/type/ProjectType.vue')
       }
     ]
@@ -76,6 +87,9 @@ export default [
       {
         path: 'course',
         name: 'CourseAnswer',
+        meta: {
+          hasLogin: true
+        },
         component: () => import('@/views/answer/CourseAnswer.vue')
       }
     ]
@@ -88,7 +102,20 @@ export default [
       {
         path: 'wxmp',
         name: 'WxmpLogin',
+        meta: {
+          title: '{{TITLE_WXMP_LOGIN}}',
+          hasLogin: false
+        },
         component: () => import('@/views/login/WxmpLogin.vue')
+      },
+      {
+        path: 'user',
+        name: 'UserLogin',
+        meta: {
+          title: '{{TITLE_USER_LOGIN}}',
+          hasLogin: false
+        },
+        component: () => import('@/views/login/UserLogin.vue')
       }
     ]
   }
