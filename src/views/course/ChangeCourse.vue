@@ -12,21 +12,29 @@
       </v-breadcrumbs>
     </v-card>
 
-    <v-list>
-      <v-subheader>切换课程</v-subheader>
-      <v-list-item-group
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item, i) in courseList"
-          :key="i"
+    <v-row
+      v-scroll:#scroll-target="onScroll"
+      align="center"
+      justify="center"
+      style="height: 1000px"
+    >
+      <v-list>
+        <v-subheader>切换课程</v-subheader>
+        <v-list-item-group
+          color="primary"
         >
-          <v-list-item-content>
-            <v-btn rounded color="blue-grey lighten-2" @click="changeCourseType(item)">{{item.getTypeName()}}</v-btn>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+          <v-list-item
+            v-for="(item, i) in courseList"
+            :key="i"
+          >
+            <v-list-item-content>
+              <v-btn rounded color="blue-grey lighten-2" @click="changeCourseType(item)">{{item.getTypeName()}}</v-btn>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-row>
+
   </div>
 </template>
 
