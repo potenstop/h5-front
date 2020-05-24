@@ -5,7 +5,7 @@
       max-width="400"
     >
       <p style="text-align:center;padding-top: 25px;">{{$t(localeCurrentCourse)}}</p>
-      <v-breadcrumbs :items="items">
+      <v-breadcrumbs :items="chooseCoursePathList">
         <template v-slot:divider>
           <v-icon>mdi-forward</v-icon>
         </template>
@@ -14,13 +14,15 @@
 
     <v-list>
       <v-subheader>切换课程</v-subheader>
-      <v-list-item-group v-model="item" color="primary">
+      <v-list-item-group
+        color="primary"
+      >
         <v-list-item
           v-for="(item, i) in courseList"
           :key="i"
         >
           <v-list-item-content>
-            <v-btn rounded color="blue-grey lighten-2" @click="chooseCourse(item)">{{item.text}}</v-btn>
+            <v-btn rounded color="blue-grey lighten-2" @click="changeCourseType(item)">{{item.getTypeName()}}</v-btn>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -31,51 +33,37 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { PageShowLocale } from '@/locale/PageShowLocale'
+import { CourseApi } from '@/dao/api/CourseApi'
+import { ApiUtil } from '@/common/util/ApiUtil'
+import { CourseTypeSimpleResponse } from '@/response/CourseTypeSimpleResponse'
+
+const courseApi = new CourseApi()
 @Component
 export default class ChangeCourse extends Vue {
   private name = 'ChangeCourse'
   private localeCurrentCourse = PageShowLocale.CURRENT_COURSE
-  private items = [
-    {
-      text: '大学',
-      disabled: false,
-      href: '/type/project'
-    },
-    {
-      text: '自考',
-      disabled: false,
-      href: '/type/project'
-    },
-    {
-      text: '计算机专业',
-      disabled: false,
-      href: '/type/project'
-    },
-    {
-      text: '英语',
-      disabled: true,
-      href: ''
-    }
-  ]
-  private item = 1
-  private courseList = [
-    {
-      text: '111'
-    },
-    {
-      text: '111'
-    },
-    {
-      text: '1112222222222222222222222222222222456789'
-    }
-  ]
-  private chooseCourse (item: any) {
-    this.$router.push({
-      path: '/home/default',
-      query: {
-        courseId: item.text
-      }
+  private chooseCoursePathList = []
+  private courseList: CourseTypeSimpleResponse[] = []
+  private async created () {
+    const confirmResult = await courseApi.courseTypeChangeConfirm()
+    const data = ApiUtil.getData(confirmResult)
+    data.getCurrentChooseCoursePathList().forEach(item => {
+      this.chooseCoursePathList.push({
+        text: item.getTypeName(),
+        disabled: false,
+        href: '/type/project'
+      })
     })
+    this.courseList = data.getChangeCourseList()
+  }
+  private async changeCourseType (item: CourseTypeSimpleResponse) {
+    await courseApi.courseTypeChange(item.getCourseTypeId())
+    await this.$router.push({
+      path: '/home/default'
+    })
+  }
+  private onScroll (e) {
+    console.log(e.target.scrollTop)
   }
 }
 </script>

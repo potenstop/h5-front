@@ -1,5 +1,5 @@
 import { UserAuthResponse } from '@/response/UserAuthResponse'
-import { JsonProperty } from 'papio-h5'
+import { JsonProperty, ReturnGenericsProperty } from 'papio-h5'
 /**
  *
  * 功能描述:
@@ -18,6 +18,7 @@ export class UserAuthBasicResponse {
   @JsonProperty
   private avatar: string
   @JsonProperty
+  @ReturnGenericsProperty(Array, new Map<string, {new(): object}>().set('Array', UserAuthResponse))
   private userAuthList: UserAuthResponse[]
   public getUserId (): number {
     return this.userId
