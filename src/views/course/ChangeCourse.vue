@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <scroller>
     <v-card
       class="mx-auto"
       max-width="400"
@@ -11,31 +11,23 @@
         </template>
       </v-breadcrumbs>
     </v-card>
-
-    <v-row
-      v-scroll:#scroll-target="onScroll"
-      align="center"
-      justify="center"
-      style="height: 1000px"
-    >
-      <v-list>
-        <v-subheader>切换课程</v-subheader>
-        <v-list-item-group
-          color="primary"
+    <v-list>
+      <v-subheader>切换课程</v-subheader>
+      <v-list-item-group
+        color="primary"
+      >
+        <v-list-item
+          v-for="(item, i) in courseList"
+          :key="i"
         >
-          <v-list-item
-            v-for="(item, i) in courseList"
-            :key="i"
-          >
-            <v-list-item-content>
-              <v-btn rounded color="blue-grey lighten-2" @click="changeCourseType(item)">{{item.getTypeName()}}</v-btn>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-row>
+          <v-list-item-content>
+            <v-btn rounded color="blue-grey lighten-2" @click="changeCourseType(item)">{{item.getTypeName()}}</v-btn>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
 
-  </div>
+    </v-list>
+  </scroller>
 </template>
 
 <script lang="ts">
@@ -70,12 +62,16 @@ export default class ChangeCourse extends Vue {
       path: '/home/default'
     })
   }
-  private onScroll (e) {
-    console.log(e.target.scrollTop)
-  }
 }
 </script>
 
 <style scoped>
+.example{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  overflow: hidden;
+}
 
 </style>

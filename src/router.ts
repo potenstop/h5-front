@@ -59,22 +59,9 @@ router.afterEach(to => {
 
 // http response 响应拦截器
 axios.interceptors.response.use((response: any) => {
-  if ('code' in response.data && response.data.code !== '0') {
-    store.dispatch('app/addErrorLog', {
-      type: 'http',
-      code: response.data.code,
-      mes: response.data.message,
-      url: window.location.href
-    })
-  }
+  if ('code' in response.data && response.data.code !== '0') {}
   return response
 }, error => {
-  store.dispatch('app/addErrorLog', {
-    type: 'http',
-    code: error.status,
-    mes: error.message,
-    url: window.location.href
-  })
   if (error.response) {
     switch (error.response.status) {
       // 返回401，清除token信息并跳转到登录页面
@@ -86,7 +73,7 @@ axios.interceptors.response.use((response: any) => {
         })
     }
   }
-  messageVue.$Message.error({ content: `url:${error.config.url} message: ${error.message} status: ${error.response.status}`, duration: 5 })
+  messageVue.$Message.error({ content: `url:${error.config.url} message: ${error.message} status: ${error.response ? error.response.status : '未知'}`, duration: 5 })
   // 返回接口返回的错误信息
   return Promise.reject(error)
 })
