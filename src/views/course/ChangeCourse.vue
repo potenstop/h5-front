@@ -21,7 +21,7 @@
           :key="i"
         >
           <v-list-item-content>
-            <v-btn rounded color="blue-grey lighten-2" @click="changeCourseType(item)">{{item.getTypeName()}}</v-btn>
+            <v-btn rounded color="blue-grey lighten-2" @click="changeCourseType(item)">{{item.getCourseName()}}</v-btn>
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
@@ -36,6 +36,7 @@ import { PageShowLocale } from '@/locale/PageShowLocale'
 import { CourseApi } from '@/dao/api/CourseApi'
 import { ApiUtil } from '@/common/util/ApiUtil'
 import { CourseTypeSimpleResponse } from '@/response/CourseTypeSimpleResponse'
+import { CourseSimpleResponse } from '@/response/CourseSimpleResponse'
 
 const courseApi = new CourseApi()
 @Component
@@ -43,7 +44,7 @@ export default class ChangeCourse extends Vue {
   private name = 'ChangeCourse'
   private localeCurrentCourse = PageShowLocale.CURRENT_COURSE
   private chooseCoursePathList = []
-  private courseList: CourseTypeSimpleResponse[] = []
+  private courseList: CourseSimpleResponse[] = []
   private async created () {
     const confirmResult = await courseApi.courseTypeChangeConfirm()
     const data = ApiUtil.getData(confirmResult)
@@ -56,8 +57,8 @@ export default class ChangeCourse extends Vue {
     })
     this.courseList = data.getChangeCourseList()
   }
-  private async changeCourseType (item: CourseTypeSimpleResponse) {
-    await courseApi.courseTypeChange(item.getCourseTypeId())
+  private async changeCourseType (item: CourseSimpleResponse) {
+    await courseApi.courseChange(item.getCourseId())
     await this.$router.push({
       path: '/home/default'
     })
@@ -66,12 +67,5 @@ export default class ChangeCourse extends Vue {
 </script>
 
 <style scoped>
-.example{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  overflow: hidden;
-}
 
 </style>

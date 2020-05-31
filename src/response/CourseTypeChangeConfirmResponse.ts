@@ -1,5 +1,6 @@
 import { JsonProperty, ReturnGenericsProperty } from 'papio-h5'
 import { CourseTypeSimpleResponse } from '@/response/CourseTypeSimpleResponse'
+import { CourseSimpleResponse } from '@/response/CourseSimpleResponse'
 /**
  *
  * 功能描述:
@@ -15,12 +16,12 @@ export class CourseTypeChangeConfirmResponse {
   @ReturnGenericsProperty(Array, new Map<string, {new(): object}>().set('Array', CourseTypeSimpleResponse))
   private currentChooseCoursePathList: CourseTypeSimpleResponse[]
   @JsonProperty
-  @ReturnGenericsProperty(Array, new Map<string, {new(): object}>().set('Array', CourseTypeSimpleResponse))
-  private changeCourseList: CourseTypeSimpleResponse[]
-  public getChangeCourseList (): CourseTypeSimpleResponse[] {
+  @ReturnGenericsProperty(Array, new Map<string, {new(): object}>().set('Array', CourseSimpleResponse))
+  private changeCourseList: CourseSimpleResponse[]
+  public getChangeCourseList (): CourseSimpleResponse[] {
     return this.changeCourseList
   }
-  public setChangeCourseList (changeCourseList: CourseTypeSimpleResponse[]): void {
+  public setChangeCourseList (changeCourseList: CourseSimpleResponse[]): void {
     this.changeCourseList = changeCourseList
   }
   public getCurrentChooseCoursePathList (): CourseTypeSimpleResponse[] {

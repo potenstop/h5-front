@@ -17,6 +17,9 @@ import {
 } from 'papio-h5'
 import { ApiResult } from '@/bmo/ApiResult'
 import { CourseTypeChangeConfirmResponse } from '@/response/CourseTypeChangeConfirmResponse'
+import { AlbumCourseProblemHistoryListItemRequest } from '@/request/AlbumCourseProblemHistoryListItemRequest'
+import { PageResponse } from '@/bmo/PageResponse'
+import { AlbumCourseProblemHistoryListItemResponse } from '@/response/AlbumCourseProblemHistoryListItemResponse'
 @AxisoRemote({ filepath: '/src/dao/api', name: 'course-api', timeout: 10000 })
 export class CourseApi {
   @GetMapping('/front/course/type/change/confirm')
@@ -24,9 +27,14 @@ export class CourseApi {
   public courseTypeChangeConfirm (): Promise<ApiResult<CourseTypeChangeConfirmResponse>> {
     return null
   }
-  @PutMapping('/front/course/type/change')
+  @PutMapping('/front/course/change')
   @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', Number))
-  public courseTypeChange (@RequestParam('changeCourseTypeId') changeCourseTypeId: number): Promise<ApiResult<CourseTypeChangeConfirmResponse>> {
+  public courseChange (@RequestParam('changeTypeId') changeTypeId: number): Promise<ApiResult<number>> {
+    return null
+  }
+  @PostMapping('/front/album/course/problem/history')
+  @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', PageResponse).set('data.list', Array).set('data.list.Array', AlbumCourseProblemHistoryListItemResponse))
+  public albumCourseProblemHistory (@RequestBody request: AlbumCourseProblemHistoryListItemRequest): Promise<ApiResult<PageResponse<AlbumCourseProblemHistoryListItemResponse>>> {
     return null
   }
 }
