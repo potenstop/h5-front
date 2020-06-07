@@ -2,19 +2,73 @@
   <div>
     <div class="float-right">
       <v-btn rounded color="blue-grey" style="padding-left: 20px;padding-right: 20px" @click="changeCourse">
-        英语四级
+        {{courseName}}
         <v-icon right>mdi-menu-down</v-icon>
+      </v-btn>
+    </div>
+    <v-carousel
+      :continuous="false"
+      :cycle="true"
+      :show-arrows="false"
+      hide-delimiter-background
+      delimiter-icon="mdi-minus"
+      height="150"
+      interval="4000"
+    >
+      <v-carousel-item
+        v-for="(slide, i) in slides"
+        :key="i"
+      >
+        <v-sheet
+          :color="colors[i]"
+          height="100%"
+          tile
+        >
+          <v-row
+            class="fill-height"
+            align="center"
+            justify="center"
+          >
+            <div class="display-3">{{ slide }} Slide</div>
+          </v-row>
+        </v-sheet>
+      </v-carousel-item>
+    </v-carousel>
+    <div>
+      <span>
+        <v-btn class="mx-2" fab dark small color="primary">
+          <v-icon dark >mdi-alarm</v-icon>
+        </v-btn>
+        1112
+      </span>
+      <v-btn class="mx-2" fab dark small color="primary">
+        <v-icon dark v-text="1112">mdi-minus</v-icon>
+      </v-btn>
+      <v-btn class="mx-2" fab dark small color="primary">
+        <v-icon dark>mdi-minus</v-icon>
+      </v-btn>
+      <v-btn class="mx-2" fab dark small color="primary">
+        <v-icon dark>mdi-minus</v-icon>
+      </v-btn>
+      <v-btn class="mx-2" fab dark small color="primary">
+        <v-icon dark>mdi-minus</v-icon>
+      </v-btn>
+      <v-btn class="mx-2" fab dark small color="primary">
+        <v-icon dark>mdi-minus</v-icon>
+      </v-btn>
+      <v-btn class="mx-2" fab dark small color="primary">
+        <v-icon dark>mdi-minus</v-icon>
       </v-btn>
     </div>
     <v-list two-line>
       <v-subheader>答题历史</v-subheader>
       <v-list-item
-        v-for="item in items"
-        :key="item.title"
+        v-for="item in albumCourseProblemHistoryListItemResponseList"
+        :key="item.getAlbumCourseProblemId()"
       >
         <v-list-item-content>
-          <v-list-item-title v-text="item.title"></v-list-item-title>
-          <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle>
+          <v-list-item-title v-text="item.getAlbumName()"></v-list-item-title>
+          <v-list-item-subtitle v-text="getSubtitle(item)"></v-list-item-subtitle>
         </v-list-item-content>
 
         <v-list-item-action>
@@ -27,13 +81,13 @@
     <v-list two-line>
       <v-subheader>真题模考</v-subheader>
       <v-list-item
-        v-for="item in items"
-        :key="item.title"
-        @click="clickAnswerItem"
+        v-for="item in albumCourseListItemSimpleFrontResponseList"
+        :key="item.getAlbumId()"
+        @click="clickAnswerItem(item)"
       >
         <v-list-item-content>
-          <v-list-item-title v-text="item.title"></v-list-item-title>
-          <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle>
+          <v-list-item-title v-text="item.getAlbumName()"></v-list-item-title>
+          <v-list-item-subtitle v-text="getSubtitle(item)"></v-list-item-subtitle>
         </v-list-item-content>
 
         <v-list-item-action>
@@ -48,25 +102,57 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { CourseApi } from '@/dao/api/CourseApi'
+import { ApiUtil } from '@/common/util/ApiUtil'
+import { AlbumCourseProblemHistoryListItemRequest } from '@/request/AlbumCourseProblemHistoryListItemRequest'
+import { AlbumCourseProblemHistoryListItemResponse } from '@/response/AlbumCourseProblemHistoryListItemResponse'
+import { AlbumCourseListItemSimpleFrontResponse } from '@/response/AlbumCourseListItemSimpleFrontResponse'
+import { AlbumCourseListItemBasicFrontResponse } from '@/response/AlbumCourseListItemBasicFrontResponse'
+
+let courseApi = new CourseApi()
 
 @Component
 export default class DefaultHome extends Vue {
   private name = 'DefaultHome'
-  private items = [
-    {
-      icon: 'folder',
-      iconClass: 'grey lighten-1 white--text',
-      title: '2019 上半年考试',
-      subtitle: '难度3 100人做过 题目数40'
-    },
-    { icon: 'folder', iconClass: 'grey lighten-1 white--text', title: '2019 下半年考试', subtitle: 'Jan 17, 2014' },
-    { icon: 'folder', iconClass: 'grey lighten-1 white--text', title: 'Work', subtitle: 'Jan 28, 2014' }
+  private courseName: string = ''
+  private albumCourseProblemHistoryListItemResponseList: AlbumCourseProblemHistoryListItemResponse[] = []
+  private albumCourseListItemSimpleFrontResponseList: AlbumCourseListItemSimpleFrontResponse[] = []
+  private colors = [
+    'green',
+    'secondary',
+    'yellow darken-4',
+    'red lighten-2',
+    'orange darken-1'
   ]
+  private slides = [
+    'First',
+    'Second',
+    'Third',
+    'Fourth',
+    'Fifth'
+  ]
+  private async created () {
+    const courseCurrentInfoResponse = ApiUtil.getData(await courseApi.courseCurrentInfo())
+    this.courseName = courseCurrentInfoResponse.getCourseName()
+    const albumCourseProblemHistoryListItemRequest = new AlbumCourseProblemHistoryListItemRequest()
+    albumCourseProblemHistoryListItemRequest.setPageNum(1)
+    albumCourseProblemHistoryListItemRequest.setPageSize(10)
+    this.albumCourseProblemHistoryListItemResponseList = ApiUtil.getData(await courseApi.albumCourseProblemHistory(albumCourseProblemHistoryListItemRequest)).getList()
+    this.albumCourseListItemSimpleFrontResponseList = ApiUtil.getData(await courseApi.albumCourseOldExam())
+  }
   private changeCourse () {
     this.$router.push('/course/change')
   }
-  private clickAnswerItem () {
-    this.$router.push('/answer/course')
+  private clickAnswerItem (item: AlbumCourseListItemBasicFrontResponse) {
+    this.$router.push({
+      path: '/answer/course',
+      query: {
+        albumId: item.getAlbumId() + ''
+      }
+    })
+  }
+  private getSubtitle (item: AlbumCourseListItemBasicFrontResponse) {
+    return '难度' + item.getDifficultyDegree() + ' ' + item.getAnswerNumber() + '人做过 题目数' + item.getContentCount()
   }
 }
 </script>

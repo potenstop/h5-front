@@ -20,6 +20,8 @@ import { CourseTypeChangeConfirmResponse } from '@/response/CourseTypeChangeConf
 import { AlbumCourseProblemHistoryListItemRequest } from '@/request/AlbumCourseProblemHistoryListItemRequest'
 import { PageResponse } from '@/bmo/PageResponse'
 import { AlbumCourseProblemHistoryListItemResponse } from '@/response/AlbumCourseProblemHistoryListItemResponse'
+import { AlbumCourseListItemSimpleFrontResponse } from '@/response/AlbumCourseListItemSimpleFrontResponse'
+import { CourseCurrentInfoResponse } from '@/response/CourseCurrentInfoResponse'
 @AxisoRemote({ filepath: '/src/dao/api', name: 'course-api', timeout: 10000 })
 export class CourseApi {
   @GetMapping('/front/course/type/change/confirm')
@@ -29,12 +31,23 @@ export class CourseApi {
   }
   @PutMapping('/front/course/change')
   @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', Number))
-  public courseChange (@RequestParam('changeTypeId') changeTypeId: number): Promise<ApiResult<number>> {
+  public courseChange (@RequestParam('courseId') courseId: number): Promise<ApiResult<number>> {
     return null
   }
   @PostMapping('/front/album/course/problem/history')
   @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', PageResponse).set('data.list', Array).set('data.list.Array', AlbumCourseProblemHistoryListItemResponse))
   public albumCourseProblemHistory (@RequestBody request: AlbumCourseProblemHistoryListItemRequest): Promise<ApiResult<PageResponse<AlbumCourseProblemHistoryListItemResponse>>> {
+    return null
+  }
+  @PostMapping('/front/album/course/old-exam')
+  @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', Array).set('data.Array', AlbumCourseListItemSimpleFrontResponse))
+  public albumCourseOldExam (): Promise<ApiResult<AlbumCourseListItemSimpleFrontResponse[]>> {
+    return null
+  }
+
+  @GetMapping('/front/course/current/info')
+  @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', CourseCurrentInfoResponse))
+  public courseCurrentInfo (): Promise<ApiResult<CourseCurrentInfoResponse>> {
     return null
   }
 }
