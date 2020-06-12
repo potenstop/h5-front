@@ -10,7 +10,8 @@
 import Mock from 'mockjs'
 import { ApiResult } from '@/bmo/ApiResult'
 import { CourseTypeChangeConfirmResponse } from '@/response/CourseTypeChangeConfirmResponse'
-import { JsonProtocol } from 'papio-h5'
+import { JsonProperty, JsonProtocol } from 'papio-h5'
+import { CourseCurrentInfoResponse } from '@/response/CourseCurrentInfoResponse'
 // 配置Ajax请求延时，可用来测试网络延迟大时项目中一些效果
 Mock.setup({
   timeout: 10
@@ -75,6 +76,12 @@ Mock.mock(/\/front\/course\/type\/change\/confirm(|\?\S*)$/, (req) => {
 Mock.mock(/\/front\/course\/type\/change(|\?\S*)$/, (req) => {
   const result = new ApiResult<number>()
   result.setData(1)
+  return result
+})
+Mock.mock(/\/course-api\/front\/course\/current\/info(|\?\S*)$/, (req) => {
+  const result = new ApiResult<CourseCurrentInfoResponse>()
+  let courseCurrentInfoResponse = JsonProtocol.jsonToBean({ courseId: 1, courseName: '计算机网络', courseTypeThreeId: 2, courseTypeThreeName: '计算机' }, CourseCurrentInfoResponse)
+  result.setData(courseCurrentInfoResponse)
   return result
 })
 export default Mock

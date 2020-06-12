@@ -34,32 +34,26 @@
         </v-sheet>
       </v-carousel-item>
     </v-carousel>
-    <div>
-      <span>
-        <v-btn class="mx-2" fab dark small color="primary">
-          <v-icon dark >mdi-alarm</v-icon>
-        </v-btn>
-        1112
-      </span>
-      <v-btn class="mx-2" fab dark small color="primary">
-        <v-icon dark v-text="1112">mdi-minus</v-icon>
-      </v-btn>
-      <v-btn class="mx-2" fab dark small color="primary">
-        <v-icon dark>mdi-minus</v-icon>
-      </v-btn>
-      <v-btn class="mx-2" fab dark small color="primary">
-        <v-icon dark>mdi-minus</v-icon>
-      </v-btn>
-      <v-btn class="mx-2" fab dark small color="primary">
-        <v-icon dark>mdi-minus</v-icon>
-      </v-btn>
-      <v-btn class="mx-2" fab dark small color="primary">
-        <v-icon dark>mdi-minus</v-icon>
-      </v-btn>
-      <v-btn class="mx-2" fab dark small color="primary">
-        <v-icon dark>mdi-minus</v-icon>
-      </v-btn>
-    </div>
+    <v-container fluid>
+      <v-row
+        class="mb-6"
+        no-gutters
+      >
+        <v-col
+          v-for="item in navigationIconList"
+          :key="item.text"
+          justify="center"
+          align="center"
+        >
+          <v-avatar color="indigo" size="60">
+            <v-icon dark size="32">mdi-account-circle</v-icon>
+          </v-avatar>
+          <v-col cols="12" sm="8">
+            {{item.text}}
+          </v-col>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-list two-line>
       <v-subheader>答题历史</v-subheader>
       <v-list-item
@@ -130,6 +124,20 @@ export default class DefaultHome extends Vue {
     'Third',
     'Fourth',
     'Fifth'
+  ]
+  private navigationIconList = [
+    {
+      text: '答题历史'
+    },
+    {
+      text: '真题模考'
+    },
+    {
+      text: '错题练习'
+    },
+    {
+      text: '章节练习'
+    }
   ]
   private async created () {
     const courseCurrentInfoResponse = ApiUtil.getData(await courseApi.courseCurrentInfo())
