@@ -118,5 +118,21 @@ export default [
         component: () => import('@/views/login/UserLogin.vue')
       }
     ]
+  },
+  {
+    path: '/album',
+    name: 'Album',
+    component: BlankOverall,
+    children: [
+      {
+        path: 'answer/history',
+        name: 'AnswerHistoryAlbum',
+        meta: {
+          title: '{{TITLE_ANSWER_HISTORY_ALBUM}}',
+          hasLogin: false
+        },
+        component: () => import('@/views/album/AnswerHistoryAlbum.vue')
+      }
+    ]
   }
 ]

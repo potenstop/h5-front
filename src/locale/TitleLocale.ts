@@ -19,4 +19,7 @@ export class TitleLocale {
 
   @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '用户登录' }])
   public static readonly USER_LOGIN = prefix + 'USER_LOGIN'
+
+  @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '答题历史' }])
+  public static readonly ANSWER_HISTORY_ALBUM = prefix + 'ANSWER_HISTORY_ALBUM'
 }

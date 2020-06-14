@@ -1,8 +1,8 @@
-import Vue from "vue";
+import Vue from 'vue'
 
-declare module "*.js";
+declare module '*.js';
 
-declare module "vue/types/vue" {
+declare module 'vue/types/vue' {
   // Global properties can be declared
   // on the `VueConstructor` interface
   interface VueConstructor {
@@ -12,12 +12,12 @@ declare module "vue/types/vue" {
 }
 
 // ComponentOptions is declared in types/options.d.ts
-declare module "vue/types/options" {
+declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
     $config?: any;
   }
 }
-declare module "vue/types/vue" {
+declare module 'vue/types/vue' {
   // 3. Declare augmentation for Vue
   interface Vue {
     $config: any;

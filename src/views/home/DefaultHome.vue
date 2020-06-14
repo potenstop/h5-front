@@ -44,6 +44,7 @@
           :key="item.text"
           justify="center"
           align="center"
+          @click="$router.push(item.path)"
         >
           <v-avatar color="indigo" size="60">
             <v-icon dark size="32">mdi-account-circle</v-icon>
@@ -127,16 +128,20 @@ export default class DefaultHome extends Vue {
   ]
   private navigationIconList = [
     {
-      text: '答题历史'
+      text: '答题历史',
+      path: '/album/answer/history'
     },
     {
-      text: '真题模考'
+      text: '真题模考',
+      path: '/album/answer/history'
     },
     {
-      text: '错题练习'
+      text: '错题练习',
+      path: '/album/answer/history'
     },
     {
-      text: '章节练习'
+      text: '章节练习',
+      path: '/album/answer/history'
     }
   ]
   private async created () {
@@ -150,17 +155,6 @@ export default class DefaultHome extends Vue {
   }
   private changeCourse () {
     this.$router.push('/course/change')
-  }
-  private clickAnswerItem (item: AlbumCourseListItemBasicFrontResponse) {
-    this.$router.push({
-      path: '/answer/course',
-      query: {
-        albumId: item.getAlbumId() + ''
-      }
-    })
-  }
-  private getSubtitle (item: AlbumCourseListItemBasicFrontResponse) {
-    return '难度' + item.getDifficultyDegree() + ' ' + item.getAnswerNumber() + '人做过 题目数' + item.getContentCount()
   }
 }
 </script>

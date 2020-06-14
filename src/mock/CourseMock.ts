@@ -8,80 +8,24 @@
  * @date 2019/9/11 10:27
  */
 import Mock from 'mockjs'
-import { ApiResult } from '@/bmo/ApiResult'
-import { CourseTypeChangeConfirmResponse } from '@/response/CourseTypeChangeConfirmResponse'
-import { JsonProperty, JsonProtocol } from 'papio-h5'
-import { CourseCurrentInfoResponse } from '@/response/CourseCurrentInfoResponse'
 // 配置Ajax请求延时，可用来测试网络延迟大时项目中一些效果
 Mock.setup({
   timeout: 10
 })
 
 Mock.mock(/\/front\/course\/type\/change\/confirm(|\?\S*)$/, (req) => {
-  const result = new ApiResult<CourseTypeChangeConfirmResponse>()
-  const response = JsonProtocol.jsonToBean({
-    currentChooseCoursePathList: [{
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }
-    ],
-    changeCourseList: [{
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '2'
-    }, {
-      courseTypeId: 1,
-      typeName: '3'
-    }, {
-      courseTypeId: 1,
-      typeName: '4'
-    }
-    ]
-  }, CourseTypeChangeConfirmResponse)
-  result.setData(response)
-  return result
+  return { 'code': '0', 'message': 'suc', 'data': { 'currentChooseCoursePathList': [{ 'courseTypeId': 1, 'typeName': '升学.考研' }, { 'courseTypeId': 2, 'typeName': '自考' }, { 'courseTypeId': 3, 'typeName': '计算机及应用（独立本科段）' }], 'changeCourseList': [{ 'courseId': 1, 'courseName': '中国近现代史纲要' }, { 'courseId': 2, 'courseName': '马克思主义基本原理概论' }, { 'courseId': 3, 'courseName': '英语（二）' }, { 'courseId': 4, 'courseName': '离散数学' }, { 'courseId': 5, 'courseName': 'C++程序设计' }, { 'courseId': 6, 'courseName': '操作系统' }, { 'courseId': 7, 'courseName': '数据库系统原理' }, { 'courseId': 8, 'courseName': '数据结构' }, { 'courseId': 9, 'courseName': '计算机系统结构' }, { 'courseId': 10, 'courseName': '软件工程' }, { 'courseId': 11, 'courseName': '计算机网络原理' }, { 'courseId': 12, 'courseName': 'Java语言程序设计（一）' }, { 'courseId': 13, 'courseName': '英语（二）' }, { 'courseId': 14, 'courseName': '高等数学（工本）' }, { 'courseId': 15, 'courseName': '概率论与数理统计（二）' }, { 'courseId': 16, 'courseName': '高级语言程序设计（一）' }, { 'courseId': 17, 'courseName': '计算机组成原理' }, { 'courseId': 38, 'courseName': '计算机应用基础' }, { 'courseId': 39, 'courseName': '11' }] } }
 })
 Mock.mock(/\/front\/course\/type\/change(|\?\S*)$/, (req) => {
-  const result = new ApiResult<number>()
-  result.setData(1)
-  return result
+  return { 'code': '0', 'message': 'suc', 'data': 1 }
 })
 Mock.mock(/\/course-api\/front\/course\/current\/info(|\?\S*)$/, (req) => {
-  const result = new ApiResult<CourseCurrentInfoResponse>()
-  let courseCurrentInfoResponse = JsonProtocol.jsonToBean({ courseId: 1, courseName: '计算机网络', courseTypeThreeId: 2, courseTypeThreeName: '计算机' }, CourseCurrentInfoResponse)
-  result.setData(courseCurrentInfoResponse)
-  return result
+  return { 'code': '0', 'message': 'suc', 'data': { 'courseTypeThreeId': 3, 'courseTypeThreeName': '计算机及应用（独立本科段）', 'courseId': 1, 'courseName': '中国近现代史纲要' } }
+})
+Mock.mock(/\/course-api\/front\/album\/course\/problem\/history(|\?\S*)$/, (req) => {
+  return { 'code': 0, 'message': null, 'data': { 'count': 100, 'list': [{ 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 11 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 12 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 113 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 14 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 15 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 16 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 17 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 18 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 19 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 20 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 21 }, { 'albumId': 1, 'albumName': '测试', 'answerNumber': 22, 'contentCount': '222', 'difficultyDegree': 10, 'albumCourseProblemId': 22 }] } }
+})
+Mock.mock(/\/course-api\/front\/album\/course\/old-exam(|\?\S*)$/, (req) => {
+  return { 'code': '0', 'message': 'suc', 'data': [{ 'albumId': 1, 'albumName': '2018 上半年考试', 'difficultyDegree': 1, 'answerNumber': 1, 'contentCount': 1 }, { 'albumId': 2, 'albumName': '2018 下半年考试', 'difficultyDegree': 1, 'answerNumber': 1, 'contentCount': 0 }, { 'albumId': 4, 'albumName': '全国2008年10月高等教育自学考试', 'difficultyDegree': 1, 'answerNumber': 1, 'contentCount': 47 }] }
 })
 export default Mock
