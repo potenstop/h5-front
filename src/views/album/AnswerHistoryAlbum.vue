@@ -1,102 +1,100 @@
 <template>
-  <div class="pr-wrap">
-    <div class="wrap-part first">
-      <vue-scroll
-        :ops="scrollerOps"
-        @load-start="handleLoadStart"
-        @load-before-deactivate="handleLBD"
-        ref="my_scroller">
-
-        <template>
-          <v-list two-line>
-            <course-item-album
-              v-for="(item, i) in albumCourseProblemHistoryListItemResponseList"
-              :key="i"
-              :value="item"
-            >
-            </course-item-album>
-          </v-list>
-        </template>
-      </vue-scroll>
+  <div class="pullup">
+    <div ref="scroller" class="pullup-bswrapper">
+      <div class="pullup-scroller">
+        <ul class="pullup-list">
+          <li v-for="i of len" :key="i" class="pullup-list-item">
+            {{ i % 5 === 0 ? 'scroll up 👆🏻' : `I am item ${i} `}}
+          </li>
+        </ul>
+        <div class="pullup-wrapper">
+          <div v-if="!isPullUpLoad" class="before-trigger">
+            <span class="pullup-txt">Pull up and load more</span>
+          </div>
+          <div v-else class="after-trigger">
+            <span class="pullup-txt">Loading...</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import CourseItemAlbum from '../../components/album/CourseItemAlbum.vue'
-import { AlbumCourseProblemHistoryListItemRequest } from '@/request/AlbumCourseProblemHistoryListItemRequest'
-import { ApiUtil } from '@/common/util/ApiUtil'
-import { CourseApi } from '@/dao/api/CourseApi'
-import { AlbumCourseProblemHistoryListItemResponse } from '@/response/AlbumCourseProblemHistoryListItemResponse'
 import BScroll from '@better-scroll/core'
 import Pullup from '@better-scroll/pull-up'
 
-let courseApi = new CourseApi()
 BScroll.use(Pullup)
 
-  @Component({
-    components: {
-      CourseItemAlbum
-    }
-  })
+  @Component
 export default class AnswerHistoryAlbum extends Vue {
-    private name = 'AnswerHistoryAlbum'
-    private albumCourseProblemHistoryListItemResponseList: AlbumCourseProblemHistoryListItemResponse[] = []
-    private pageNum = 1
-    private pageSize = 10
-    private index = 1;
-    private scrollerOps = {
-      vuescroll: {
-        mode: 'slide',
-        pushLoad: {
-          enable: true,
-          auto: true,
-          autoLoadDistance: 0,
-          tips: {
-            deactive: '上拉加载',
-            active: '释放加载',
-            start: '加载中...',
-            beforeDeactive: '加载成功!'
-          }
-        }
-      }
-    }
+  private name = 'AnswerHistoryAlbum'
+  private pageNum = 1
+  private pageSize = 10
+  private index = 1
+  private len = 30
+  private isPullUpLoad = false
+  private bscroll: any = null
 
-    private async created () {
-      await this.requestData()
-    }
+  private async created () {
+    // await this.requestData()
+  }
 
-    private async mounted () {
-    }
+  private async mounted () {
+    this.initBscroll()
+  }
 
-    private async requestData () {
-      try {
-        const albumCourseProblemHistoryListItemRequest = new AlbumCourseProblemHistoryListItemRequest()
-        albumCourseProblemHistoryListItemRequest.setPageNum(this.pageNum)
-        albumCourseProblemHistoryListItemRequest.setPageSize(this.pageSize)
-        let list = ApiUtil.getData(await courseApi.albumCourseProblemHistory(albumCourseProblemHistoryListItemRequest)).getList()
-        this.albumCourseProblemHistoryListItemResponseList.push(...list.splice(0, 20))
-        console.log(this.albumCourseProblemHistoryListItemResponseList.length, 222222222)
-        this.pageNum++
-      } catch (e) {
+  private initBscroll () {
+    this.bscroll = new BScroll(this.$refs.scroller as any, {
+      scrollY: true,
+      pullUpLoad: true
+    })
 
-      }
-    }
+    this.bscroll.on('pullingUp', this.pullingUpHandler)
+  }
 
-    private async handleLoadStart (vm, loadDom, done) {
-      done()
-    }
+  private async pullingUpHandler () {
+    this.isPullUpLoad = true
 
-    private async handleLBD (vm, loadDom, done) {
-      await this.requestData()
-      done()
+    await this.requestData()
+
+    this.bscroll.finishPullUp()
+    this.bscroll.refresh()
+    this.isPullUpLoad = false
+  }
+
+  private async requestData () {
+    try {
+      this.len = this.len + 30
+    } catch (e) {
+
     }
+  }
 }
 </script>
 
-<style scoped>
-.pr-wrap{
-  height: 100%;
-}
+<style lang="css">
+  .pullup{
+    height: 100%;
+  }
+  .pullup-bswrapper {
+    height: 100%;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+  }
+  .pullup-list{
+    padding: 0
+  }
+  .pullup-list-item{
+    padding: 10px 0;
+    list-style: none;
+    border-bottom: 1px solid #ccc;
+  }
+  .pullup-wrapper {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+  }
 </style>

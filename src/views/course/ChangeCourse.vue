@@ -1,5 +1,5 @@
 <template>
-  <scroller>
+  <div>
     <v-card
       class="mx-auto"
       max-width="400"
@@ -27,7 +27,7 @@
       </v-list-item-group>
 
     </v-list>
-  </scroller>
+  </div>
 </template>
 
 <script lang="ts">

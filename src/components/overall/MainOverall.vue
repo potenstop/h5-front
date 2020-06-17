@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <v-content>
+    <v-main>
       <v-container fluid>
         <router-view></router-view>
       </v-container>
-    </v-content>
+    </v-main>
     <v-bottom-navigation
       :value="activeBtn"
       color="teal"

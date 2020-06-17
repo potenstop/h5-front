@@ -9,14 +9,6 @@ import i18n from '@/plugins/i18n'
 // import message from '@/plugins/message'
 import { Message } from 'view-design'
 import 'view-design/dist/styles/iview.css'
-import VueScroller from 'vue-scroller'
-import vuescroll from 'vuescroll'
-
-// @ts-ignore
-import VueTouch from 'vue-touch'
-Vue.use(VueTouch, { name: 'v-touch' })
-Vue.use(VueScroller)
-Vue.component('vue-scroll', vuescroll)
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios

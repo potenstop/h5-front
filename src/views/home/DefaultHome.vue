@@ -55,43 +55,6 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-list two-line>
-      <v-subheader>答题历史</v-subheader>
-      <v-list-item
-        v-for="item in albumCourseProblemHistoryListItemResponseList"
-        :key="item.getAlbumCourseProblemId()"
-      >
-        <v-list-item-content>
-          <v-list-item-title v-text="item.getAlbumName()"></v-list-item-title>
-          <v-list-item-subtitle v-text="getSubtitle(item)"></v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-list-item-action>
-          <v-btn icon>
-            <v-icon color="grey lighten-1">mdi-information</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
-    <v-list two-line>
-      <v-subheader>真题模考</v-subheader>
-      <v-list-item
-        v-for="item in albumCourseListItemSimpleFrontResponseList"
-        :key="item.getAlbumId()"
-        @click="clickAnswerItem(item)"
-      >
-        <v-list-item-content>
-          <v-list-item-title v-text="item.getAlbumName()"></v-list-item-title>
-          <v-list-item-subtitle v-text="getSubtitle(item)"></v-list-item-subtitle>
-        </v-list-item-content>
-
-        <v-list-item-action>
-          <v-btn icon>
-            <v-icon color="grey lighten-1">mdi-play-circle-outline</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
   </div>
 </template>
 
