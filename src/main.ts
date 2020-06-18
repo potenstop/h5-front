@@ -9,9 +9,16 @@ import i18n from '@/plugins/i18n'
 // import message from '@/plugins/message'
 import { Message } from 'view-design'
 import 'view-design/dist/styles/iview.css'
+import VueScroller from 'vue-scroller'
+import '../public/style.css'
+// @ts-ignore
+import VueTouch from 'vue-touch'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
+
+Vue.use(VueTouch, { name: 'v-touch' })
+Vue.use(VueScroller)
 
 if (process.env.NODE_ENV !== 'production') {
   require('@/mock/UserMock')
