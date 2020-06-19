@@ -88,6 +88,7 @@ export default [
         path: 'course',
         name: 'CourseAnswer',
         meta: {
+          title: '{{TITLE_ALBUM_DETAIL}}',
           hasLogin: true
         },
         component: () => import('@/views/answer/CourseAnswer.vue')

@@ -1,7 +1,7 @@
 <template>
   <div class="main-div">
-    <div ref="scroller" class="history-bs-wrapper">
-      <div class="pullup-scroller">
+    <course-scroll-album :load-pull-data="requestData">
+      <template v-slot:dataList>
         <v-list two-line>
           <course-item-album
             v-for="(item, i) in albumCourseProblemHistoryListItemResponseList"
@@ -10,16 +10,8 @@
           >
           </course-item-album>
         </v-list>
-        <div class="pullup-wrapper">
-          <div v-if="!isPullUpLoad" class="before-trigger">
-            <span class="pullup-txt">Pull up and load more</span>
-          </div>
-          <div v-else class="after-trigger">
-            <span class="pullup-txt">Loading...</span>
-          </div>
-        </div>
-      </div>
-    </div>
+      </template>
+    </course-scroll-album>
   </div>
 </template>
 
@@ -32,51 +24,27 @@ import { AlbumCourseProblemHistoryListItemRequest } from '@/request/AlbumCourseP
 import { ApiUtil } from '@/common/util/ApiUtil'
 import { AlbumCourseProblemHistoryListItemResponse } from '@/response/AlbumCourseProblemHistoryListItemResponse'
 import { CourseApi } from '@/dao/api/CourseApi'
+import CourseScrollAlbum from '@/components/album/CourseScrollAlbum.vue'
 
 BScroll.use(Pullup)
 const courseApi = new CourseApi()
 
 @Component({
   components: {
-    CourseItemAlbum
+    CourseItemAlbum,
+    CourseScrollAlbum
   }
 })
 export default class AnswerHistoryAlbum extends Vue {
   private name = 'AnswerHistoryAlbum'
   private pageNum = 1
   private pageSize = 10
-  private index = 1
-  private len = 30
-  private isPullUpLoad = false
-  private bscroll: any = null
   private albumCourseProblemHistoryListItemResponseList: AlbumCourseProblemHistoryListItemResponse[] = []
 
   private async created () {
   }
 
   private async mounted () {
-    this.initBscroll()
-    await this.pullingUpHandler()
-  }
-
-  private initBscroll () {
-    this.bscroll = new BScroll(this.$refs.scroller as any, {
-      scrollY: true,
-      pullUpLoad: true,
-      click: false
-    })
-
-    this.bscroll.on('pullingUp', this.pullingUpHandler)
-  }
-
-  private async pullingUpHandler () {
-    this.isPullUpLoad = true
-
-    await this.requestData()
-
-    this.bscroll.finishPullUp()
-    this.bscroll.refresh()
-    this.isPullUpLoad = false
   }
 
   private async requestData () {
@@ -96,19 +64,4 @@ export default class AnswerHistoryAlbum extends Vue {
 </script>
 
 <style lang="css">
-  .history-bs-wrapper {
-    height: 100%;
-    padding: 0 10px;
-    overflow: hidden;
-  }
-  .pullup-list-item{
-    padding: 10px 0;
-    list-style: none;
-    border-bottom: 1px solid #ccc;
-  }
-  .pullup-wrapper {
-    padding: 20px;
-    text-align: center;
-    color: #999;
-  }
 </style>
