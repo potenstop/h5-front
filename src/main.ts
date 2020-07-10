@@ -11,18 +11,19 @@ import { Message } from 'view-design'
 import 'view-design/dist/styles/iview.css'
 import VueScroller from 'vue-scroller'
 import '../public/style.css'
-// @ts-ignore
-import VueTouch from 'vue-touch'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/swiper-bundle.css'
+import 'katex/dist/katex.min.css'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
 
-Vue.use(VueTouch, { name: 'v-touch' })
+Vue.use(VueAwesomeSwiper)
 Vue.use(VueScroller)
 
 if (process.env.NODE_ENV !== 'production') {
-  require('@/mock/UserMock')
-  require('@/mock/CourseMock')
+  // require('@/mock/UserMock')
+  // require('@/mock/CourseMock')
 }
 Vue.prototype.$Message = Message
 new Vue({

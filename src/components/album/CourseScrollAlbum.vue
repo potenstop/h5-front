@@ -5,10 +5,10 @@
         <slot name="dataList"></slot>
         <div class="pullup-wrapper">
           <div v-if="!isPullUpLoad" class="before-trigger">
-            <span class="pullup-txt">Pull up and load more</span>
+            <span class="pullup-txt">上拉加载更多</span>
           </div>
           <div v-else class="after-trigger">
-            <span class="pullup-txt">Loading...</span>
+            <span class="pullup-txt">加载中...</span>
           </div>
         </div>
       </div>
@@ -56,6 +56,7 @@ export default class CourseScrollAlbum extends Vue {
   }
 
   private async pullingUpHandler () {
+    console.log('111')
     this.isPullUpLoad = true
     if (this.loadPullData) {
       await this.loadPullData()

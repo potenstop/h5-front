@@ -17,8 +17,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import BScroll from '@better-scroll/core'
-import Pullup from '@better-scroll/pull-up'
 import CourseItemAlbum from '@/components/album/CourseItemAlbum.vue'
 import { AlbumCourseProblemHistoryListItemRequest } from '@/request/AlbumCourseProblemHistoryListItemRequest'
 import { ApiUtil } from '@/common/util/ApiUtil'
@@ -26,7 +24,6 @@ import { AlbumCourseProblemHistoryListItemResponse } from '@/response/AlbumCours
 import { CourseApi } from '@/dao/api/CourseApi'
 import CourseScrollAlbum from '@/components/album/CourseScrollAlbum.vue'
 
-BScroll.use(Pullup)
 const courseApi = new CourseApi()
 
 @Component({
