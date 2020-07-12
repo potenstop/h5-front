@@ -50,8 +50,7 @@ export default class AnswerHistoryAlbum extends Vue {
       albumCourseProblemHistoryListItemRequest.setPageNum(this.pageNum)
       albumCourseProblemHistoryListItemRequest.setPageSize(this.pageSize)
       let list = ApiUtil.getData(await courseApi.albumCourseProblemHistory(albumCourseProblemHistoryListItemRequest)).getList()
-      this.albumCourseProblemHistoryListItemResponseList.push(...list.splice(0, 20))
-      console.log(this.albumCourseProblemHistoryListItemResponseList.length, 222222222)
+      this.albumCourseProblemHistoryListItemResponseList.push(...list)
       this.pageNum++
     } catch (e) {
 

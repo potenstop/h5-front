@@ -25,4 +25,7 @@ export class TitleLocale {
 
   @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '题目详情' }])
   public static readonly ALBUM_DETAIL = prefix + 'ALBUM_DETAIL'
+
+  @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '真题模考' }])
+  public static readonly ANSWER_OLD_EXAM_ALBUM = prefix + 'ANSWER_OLD_EXAM_ALBUM'
 }

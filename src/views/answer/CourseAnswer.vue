@@ -2,7 +2,12 @@
   <div class="main-div">
     <swiper ref="swiper" :options="swiperOptions">
       <swiper-slide v-for="(item, i) in dataList" :key="i">
-        <content-topic-item :data="item" :topic-index="i" :topic-total="dataList.length"></content-topic-item>
+        <content-topic-item
+          :data="item"
+          :topic-index="i"
+          :topic-total="dataList.length"
+          @on-next-topic="nextTopic(i)"
+        ></content-topic-item>
       </swiper-slide>
     </swiper>
   </div>
@@ -44,7 +49,10 @@ export default class CourseAnswer extends Vue {
     }
     this.dataList = ApiUtil.getData(await courseApi.contentTopicByAlbumId(+query.albumId))
   }
-  mounted () {
+  private mounted () {
+  }
+  private nextTopic (index: number) {
+    this.swiper.$swiper.slideTo(index + 1, 1000, false)
   }
 }
 </script>

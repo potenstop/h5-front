@@ -23,6 +23,7 @@ export class ContentTopicSelectOptionResponse {
   private optionLabel: string
   @JsonProperty
   private isOptionAnswer: number
+  private activity: boolean
   public getContentTopicSelectOptionId (): number {
     return this.contentTopicSelectOptionId
   }
@@ -64,5 +65,11 @@ export class ContentTopicSelectOptionResponse {
   }
   public setIsOptionAnswer (isOptionAnswer: number): void {
     this.isOptionAnswer = isOptionAnswer
+  }
+  public getActivity (): boolean {
+    return this.activity
+  }
+  public setActivity (activity: boolean): void {
+    this.activity = activity
   }
 }

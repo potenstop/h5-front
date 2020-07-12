@@ -19,24 +19,89 @@
       </v-row>
     </v-container>
     <v-divider></v-divider>
-    <div>
+    <v-container>
       <auto-katex :data="data.getTitle()" :is-line-feed="false"></auto-katex>
-    </div>
-    <div>
+    </v-container>
+    <v-container>
       <div v-if="1 === data.getTopicType()" >
-        <div v-for="(item, i) in data.getOptionResponseList()" :key="i">
-          <auto-katex :data="item.getOptionLabel()"></auto-katex>
-        </div>
+        <v-btn-toggle
+          style="display: block"
+          v-model="toggleExclusive"
+          @change="changeChooseValue"
+        >
+          <v-row
+            align="center"
+            no-gutters
+            v-for="(item, i) in data.getOptionResponseList()"
+            :key="i"
+            style="padding-bottom: 10px"
+          >
+            <v-col
+              align-self="end"
+              cols="2"
+            >
+              <v-btn class="ma-2"
+                     outlined fab x-small
+                     color="indigo"
+              >
+                {{getOptionChar(i)}}
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="10"
+              style="padding-left: 5px"
+            >
+              <auto-katex :data="item.getOptionLabel()"></auto-katex>
+            </v-col>
+          </v-row>
+
+        </v-btn-toggle>
       </div>
-    </div>
+      <div v-else-if="2 === data.getTopicType()">
+        <v-btn-toggle
+          style="display: block"
+          multiple
+          v-model="toggleExclusiveList"
+          @change="changeChooseValueList"
+        >
+          <v-row
+            align="center"
+            no-gutters
+            v-for="(item, i) in data.getOptionResponseList()"
+            :key="i"
+            style="padding-bottom: 10px"
+          >
+            <v-col
+              align-self="end"
+              cols="2"
+            >
+              <v-btn class="ma-2"
+                     outlined fab x-small
+                     color="indigo"
+              >
+                {{getOptionChar(i)}}
+              </v-btn>
+            </v-col>
+            <v-col
+              cols="10"
+              style="padding-left: 5px"
+            >
+              <auto-katex :data="item.getOptionLabel()"></auto-katex>
+            </v-col>
+          </v-row>
+
+        </v-btn-toggle>
+      </div>
+    </v-container>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { ContentTopicAnswerListItemFrontResponse } from '@/response/ContentTopicAnswerListItemFrontResponse'
 import AutoKatex from '@/components/katex/AutoKatex.vue'
 import { ContentTopicConstant } from '@/common/constant/ContentTopicConstant'
+import { JSHelperUtil } from 'papio-h5'
 @Component({
   components: {
     AutoKatex
@@ -47,6 +112,26 @@ export default class ContentTopicItem extends Vue {
   @Prop({ default: {} }) readonly data!: ContentTopicAnswerListItemFrontResponse
   @Prop({ default: 0 }) readonly topicIndex!: number
   @Prop({ default: 0 }) readonly topicTotal!: number
+  private OPTION_CHAR_LIST = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+  private toggleExclusive: number = null
+  private toggleExclusiveList: number[] = []
+  private created () {
+    if (ContentTopicConstant.TYPE_SIGN_SELECT === this.data.getTopicType()) {
+      if (isNaN(+this.data.getChooseValue())) {
+        this.data.getOptionResponseList().forEach((item, index) => {
+          if (item.getContentId() === +this.data.getChooseValue()) {
+            this.toggleExclusive = index
+          }
+        })
+      }
+    } else if (ContentTopicConstant.TYPE_MUL_SELECT === this.data.getTopicType()) {
+      return '多项选择题'
+    } else if (ContentTopicConstant.TYPE_FILL_BLANK === this.data.getTopicType()) {
+      return '填空题'
+    } else if (ContentTopicConstant.TYPE_SHORT_ANSWER === this.data.getTopicType()) {
+      return '简答题'
+    }
+  }
   private getTopicTitle () {
     if (ContentTopicConstant.TYPE_SIGN_SELECT === this.data.getTopicType()) {
       return '单项选择题'
@@ -61,7 +146,31 @@ export default class ContentTopicItem extends Vue {
     }
   }
   private getTopicIndex () {
-    return this.topicIndex + '/' + this.topicTotal
+    return this.topicIndex + 1 + '/' + this.topicTotal
+  }
+  private getOptionChar (i: number) {
+    if (this.OPTION_CHAR_LIST.length <= i) {
+      return '未知'
+    }
+    return this.OPTION_CHAR_LIST[i]
+  }
+  private async changeChooseValue (value: number) {
+    if (JSHelperUtil.isNullOrUndefined(value)) {
+      this.data.setChooseValue('')
+    } else {
+      this.$emit('on-next-topic')
+      this.data.setChooseValue(this.data.getOptionResponseList()[this.toggleExclusive].getContentId().toString())
+    }
+  }
+  private async changeChooseValueList (value: number | undefined) {
+    if (JSHelperUtil.isNullOrUndefined(value)) {
+      this.data.setChooseValue('')
+    } else {
+      const map = new Map<number, number>()
+      this.data.getOptionResponseList().forEach((item, index) => {
+        map.set(index, item.getContentId())
+      })
+    }
   }
 }
 </script>

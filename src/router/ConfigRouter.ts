@@ -133,6 +133,14 @@ export default [
           hasLogin: false
         },
         component: () => import('@/views/album/AnswerHistoryAlbum.vue')
+      }, {
+        path: 'answer/old-exam',
+        name: 'AnswerOldExamAlbum',
+        meta: {
+          title: '{{TITLE_ANSWER_OLD_EXAM_ALBUM}}',
+          hasLogin: false
+        },
+        component: () => import('@/views/album/AnswerOldExamAlbum.vue')
       }
     ]
   }

@@ -24,6 +24,8 @@ export class ContentTopicAnswerListItemFrontResponse {
   @JsonProperty
   @ReturnGenericsProperty(Array, new Map<string, {new(): object}>().set('Array', ContentTopicSelectOptionResponse))
   private optionResponseList: ContentTopicSelectOptionResponse[]
+  @JsonProperty
+  private chooseValue: string
   public getContentId (): number {
     return this.contentId
   }
@@ -59,5 +61,11 @@ export class ContentTopicAnswerListItemFrontResponse {
   }
   public setOptionResponseList (optionResponseList: ContentTopicSelectOptionResponse[]): void {
     this.optionResponseList = optionResponseList
+  }
+  public getChooseValue (): string {
+    return this.chooseValue
+  }
+  public setChooseValue (chooseValue: string): void {
+    this.chooseValue = chooseValue
   }
 }

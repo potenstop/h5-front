@@ -96,7 +96,7 @@ export default class DefaultHome extends Vue {
     },
     {
       text: '真题模考',
-      path: '/album/answer/history'
+      path: '/album/answer/old-exam'
     },
     {
       text: '错题练习',
