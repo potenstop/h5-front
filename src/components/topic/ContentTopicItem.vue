@@ -24,73 +24,58 @@
     </v-container>
     <v-container>
       <div v-if="1 === data.getTopicType()" >
-        <v-btn-toggle
-          style="display: block"
-          v-model="toggleExclusive"
-          @change="changeChooseValue"
-        >
-          <v-row
-            align="center"
-            no-gutters
-            v-for="(item, i) in data.getOptionResponseList()"
-            :key="i"
-            style="padding-bottom: 10px"
-          >
-            <v-col
-              align-self="end"
-              cols="2"
+        <v-list flat>
+          <v-list-item-group v-model="toggleExclusive"  @change="changeChooseValue">
+            <v-list-item
+              v-for="(item, i) in data.getOptionResponseList()"
+              :key="i"
+              style="padding: 0 0"
+              active-class="deep-purple--text text--accent-4"
             >
-              <v-btn class="ma-2"
-                     outlined fab x-small
-                     color="indigo"
-              >
-                {{getOptionChar(i)}}
-              </v-btn>
-            </v-col>
-            <v-col
-              cols="10"
-              style="padding-left: 5px"
-            >
-              <auto-katex :data="item.getOptionLabel()"></auto-katex>
-            </v-col>
-          </v-row>
-
-        </v-btn-toggle>
+              <v-list-item-icon style="margin-right: 15px">
+                <v-btn
+                       outlined fab x-small
+                       color="indigo"
+                       active-class="deep-purple--text text--accent-4"
+                >
+                  {{getOptionChar(i)}}
+                </v-btn>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <auto-katex :data="item.getOptionLabel()"></auto-katex>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
       </div>
       <div v-else-if="2 === data.getTopicType()">
-        <v-btn-toggle
-          style="display: block"
-          multiple
-          v-model="toggleExclusiveList"
-          @change="changeChooseValueList"
-        >
-          <v-row
-            align="center"
-            no-gutters
-            v-for="(item, i) in data.getOptionResponseList()"
-            :key="i"
-            style="padding-bottom: 10px"
-          >
-            <v-col
-              align-self="end"
-              cols="2"
+        <v-list flat>
+          <v-list-item-group v-model="toggleExclusive"  @change="changeChooseValueList" multiple>
+            <v-list-item
+                    v-for="(item, i) in data.getOptionResponseList()"
+                    :key="i"
+                    style="padding: 0 0"
+                    active-class="deep-purple--text text--accent-4"
             >
-              <v-btn class="ma-2"
-                     outlined fab x-small
-                     color="indigo"
-              >
-                {{getOptionChar(i)}}
-              </v-btn>
-            </v-col>
-            <v-col
-              cols="10"
-              style="padding-left: 5px"
-            >
-              <auto-katex :data="item.getOptionLabel()"></auto-katex>
-            </v-col>
-          </v-row>
-
-        </v-btn-toggle>
+              <v-list-item-icon style="margin-right: 15px">
+                <v-btn
+                        outlined fab x-small
+                        color="indigo"
+                        active-class="deep-purple--text text--accent-4"
+                >
+                  {{getOptionChar(i)}}
+                </v-btn>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <auto-katex :data="item.getOptionLabel()"></auto-katex>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
       </div>
     </v-container>
   </div>
