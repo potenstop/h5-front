@@ -28,4 +28,12 @@ Mock.mock(/\/course-api\/front\/album\/course\/problem\/history(|\?\S*)$/, (req)
 Mock.mock(/\/course-api\/front\/album\/course\/old-exam(|\?\S*)$/, (req) => {
   return { 'code': '0', 'message': 'suc', 'data': [{ 'albumId': 1, 'albumName': '2018 上半年考试', 'difficultyDegree': 1, 'answerNumber': 1, 'contentCount': 1 }, { 'albumId': 2, 'albumName': '2018 下半年考试', 'difficultyDegree': 1, 'answerNumber': 1, 'contentCount': 0 }, { 'albumId': 4, 'albumName': '全国2008年10月高等教育自学考试', 'difficultyDegree': 1, 'answerNumber': 1, 'contentCount': 47 }] }
 })
+
+Mock.mock(/\/course-api\/front\/album\/course\/problem\/add(|\?\S*)$/, (req) => {
+  return { 'code': '0', 'message': 'suc', 'data': 1 }
+})
+
+Mock.mock(/\/course-api\/front\/content\/topic\/by-album(|\?\S*)$/, (req) => {
+  return { 'code': '0', 'message': 'suc', 'data': [{ 'contentId': 1, 'title': '题目1', 'analysis': '题目1', 'topicType': 1, 'gradeAmount': 2, 'optionResponseList': [{ 'contentTopicSelectOptionId': 1, 'optionLabel': '选项1' }, { 'contentTopicSelectOptionId': 2, 'optionLabel': '选项2' }, { 'contentTopicSelectOptionId': 3, 'optionLabel': '选项3' }] }, { 'contentId': 2, 'title': '题目2', 'analysis': '题目2', 'topicType': 1, 'gradeAmount': 2, 'optionResponseList': [{ 'contentTopicSelectOptionId': 1, 'optionLabel': '选项1' }, { 'contentTopicSelectOptionId': 2, 'optionLabel': '选项2' }, { 'contentTopicSelectOptionId': 3, 'optionLabel': '选项3' }] }] }
+})
 export default Mock

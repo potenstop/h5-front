@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify'
@@ -11,20 +10,17 @@ import { Message } from 'view-design'
 import 'view-design/dist/styles/iview.css'
 import VueScroller from 'vue-scroller'
 import '../public/style.css'
-import VueAwesomeSwiper from 'vue-awesome-swiper'
-import 'swiper/swiper-bundle.css'
 import 'katex/dist/katex.min.css'
+import router from './router'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
-
-Vue.use(VueAwesomeSwiper)
 Vue.use(VueScroller)
 
-if (process.env.NODE_ENV !== 'production') {
-  // require('@/mock/UserMock')
-  // require('@/mock/CourseMock')
-}
+// if (process.env.NODE_ENV !== 'production') {
+require('@/mock/UserMock')
+require('@/mock/CourseMock')
+// }
 Vue.prototype.$Message = Message
 new Vue({
   router,

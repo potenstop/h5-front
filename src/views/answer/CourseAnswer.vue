@@ -18,14 +18,17 @@ import { ApiUtil } from '@/common/util/ApiUtil'
 import { CourseApi } from '@/dao/api/CourseApi'
 import { JSHelperUtil, StringUtil } from 'papio-h5'
 import { ContentTopicAnswerListItemFrontResponse } from '@/response/ContentTopicAnswerListItemFrontResponse'
-import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper'
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import ContentTopicItem from '@/components/topic/ContentTopicItem.vue'
 import { AlbumCourseProblemAddRequest } from '@/request/AlbumCourseProblemAddRequest'
+import 'swiper/css/swiper.css'
 
 const courseApi = new CourseApi()
 @Component({
   components: {
-    ContentTopicItem
+    ContentTopicItem,
+    Swiper,
+    SwiperSlide
   }
 })
 export default class CourseAnswer extends Vue {
