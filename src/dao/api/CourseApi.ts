@@ -24,6 +24,7 @@ import { AlbumCourseListItemSimpleFrontResponse } from '@/response/AlbumCourseLi
 import { CourseCurrentInfoResponse } from '@/response/CourseCurrentInfoResponse'
 import { ContentTopicAnswerListItemFrontResponse } from '@/response/ContentTopicAnswerListItemFrontResponse'
 import { AlbumCourseProblemAddRequest } from '@/request/AlbumCourseProblemAddRequest'
+import { AlbumCourseProblemTopicResponse } from '@/response/AlbumCourseProblemTopicResponse'
 @AxisoRemote({ filepath: '/src/dao/api', name: 'course-api', timeout: 10000 })
 export class CourseApi {
   @GetMapping('/front/course/type/change/confirm')
@@ -61,6 +62,11 @@ export class CourseApi {
   @PostMapping('/front/album/course/problem/add')
   @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', Number))
   public albumCourseProblemAdd (@RequestBody request: AlbumCourseProblemAddRequest): Promise<ApiResult<number>> {
+    return null
+  }
+  @GetMapping('/mis/album/course/problem/topic/list')
+  @ReturnGenericsProperty(ApiResult, new Map<string, new() => object>().set('data', Array).set('data.Array', AlbumCourseProblemTopicResponse))
+  public albumCourseProblemTopicList (@RequestParam('albumCourseProblemId') albumCourseProblemId: number): Promise<ApiResult<AlbumCourseProblemTopicResponse[]>> {
     return null
   }
 }

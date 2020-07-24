@@ -21,7 +21,10 @@ import { ContentTopicAnswerListItemFrontResponse } from '@/response/ContentTopic
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import ContentTopicItem from '@/components/topic/ContentTopicItem.vue'
 import { AlbumCourseProblemAddRequest } from '@/request/AlbumCourseProblemAddRequest'
+import { LocalForageUtil } from '@/common/util/LocalForageUtil'
 import 'swiper/css/swiper.css'
+import { CollectionUtils } from 'papio-h5/lib/util/CollectionUtils'
+import moment from 'moment'
 
 const courseApi = new CourseApi()
 @Component({
@@ -68,8 +71,55 @@ export default class CourseAnswer extends Vue {
       request.setAlbumId(this.albumId)
       this.albumCourseProblemId = ApiUtil.getData(await courseApi.albumCourseProblemAdd(request))
     }
-
+    // 获取试卷的总的题目
     this.dataList = ApiUtil.getData(await courseApi.contentTopicByAlbumId(+query.albumId))
+  }
+  private async getCacheData () {
+    // 获取本地的
+    const historyCacheDataList = await LocalForageUtil.getItem('albumCourseProblemHistory' + this.albumCourseProblemId) as any[]
+    let historyCacheData = null
+    if (CollectionUtils.isNotEmpty(historyCacheDataList)) {
+      historyCacheData = historyCacheDataList[0]
+    }
+    let remote: any = null
+    // 获取远程的
+    try {
+      const result = await courseApi.albumCourseProblemTopicList(this.albumCourseProblemId)
+      const albumCourseProblemTopicResponseList = ApiUtil.getData(result)
+      // 找出最大的时间
+      let maxTime = null
+      let data = {}
+      albumCourseProblemTopicResponseList.forEach(item => {
+        data[item.getContentId()] = item.getInputSelectOption()
+        const current = moment(item.getUpdateTime()).format('x')
+        if (!maxTime) {
+          maxTime = current
+        } else if (current > maxTime) {
+          maxTime = current
+        }
+      })
+      remote = {}
+      remote.date = maxTime
+      remote.data = data
+    } catch (e) {
+      this.$Message.warning('获取远程数据失败')
+    }
+    if (historyCacheData && !remote) {
+      return historyCacheData.data
+    } else if (!historyCacheData && remote) {
+      return remote.data
+    } else if (remote && historyCacheData) {
+      if (historyCacheData.date <= remote.date) {
+        return remote.data
+      } else {
+        return historyCacheData.data
+      }
+    } else {
+      return {}
+    }
+  }
+  private async initData () {
+    const cacheData = await this.getCacheData()
   }
   private mounted () {
   }
