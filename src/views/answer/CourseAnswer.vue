@@ -7,6 +7,7 @@
           :topic-index="i"
           :topic-total="dataList.length"
           @on-next-topic="nextTopic(i)"
+          @on-change-choose="changeChoose(i)"
         ></content-topic-item>
       </swiper-slide>
     </swiper>
@@ -25,6 +26,8 @@ import { LocalForageUtil } from '@/common/util/LocalForageUtil'
 import 'swiper/css/swiper.css'
 import { CollectionUtils } from 'papio-h5/lib/util/CollectionUtils'
 import moment from 'moment'
+import { AlbumCourseProblemUpdateRequest } from '@/request/AlbumCourseProblemUpdateRequest'
+import { ProblemContentTopicRequest } from '@/request/ProblemContentTopicRequest'
 
 const courseApi = new CourseApi()
 @Component({
@@ -44,6 +47,7 @@ export default class CourseAnswer extends Vue {
     pagination: {
     }
   }
+  private asyncRemoteData: AlbumCourseProblemUpdateRequest = null
   private async created () {
     const query = this.$route.query as any
     this.albumId = query.albumId
@@ -71,12 +75,24 @@ export default class CourseAnswer extends Vue {
       request.setAlbumId(this.albumId)
       this.albumCourseProblemId = ApiUtil.getData(await courseApi.albumCourseProblemAdd(request))
     }
-    // 获取试卷的总的题目
-    this.dataList = ApiUtil.getData(await courseApi.contentTopicByAlbumId(+query.albumId))
+    await this.initData()
+    await this.startAsyncRemote()
   }
-  private async getCacheData () {
+  private async startAsyncRemote () {
+    setInterval(async () => {
+      if (this.asyncRemoteData !== null) {
+        const result = await courseApi.albumCourseProblemUpdate(this.asyncRemoteData)
+        if (result.getCode() !== '0' && +result.getCode() < 10000) {
+          console.log('业务异常， 需要重试')
+          throw new Error(result.getMessage())
+        }
+        this.asyncRemoteData = null
+      }
+    }, 100)
+  }
+  private async getContentTopicCacheData () {
     // 获取本地的
-    const historyCacheDataList = await LocalForageUtil.getItem('albumCourseProblemHistory' + this.albumCourseProblemId) as any[]
+    const historyCacheDataList = await LocalForageUtil.getPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId) as any[]
     let historyCacheData = null
     if (CollectionUtils.isNotEmpty(historyCacheDataList)) {
       historyCacheData = historyCacheDataList[0]
@@ -119,12 +135,54 @@ export default class CourseAnswer extends Vue {
     }
   }
   private async initData () {
-    const cacheData = await this.getCacheData()
+    const contentTopicCacheData = await this.getContentTopicCacheData()
+    // 获取试卷的总的题目
+    this.dataList = ApiUtil.getData(await courseApi.contentTopicByAlbumId(this.albumId))
+    // 设置已答的题目
+    this.dataList.forEach((item, j) => {
+      if (item.getContentId() in contentTopicCacheData) {
+        item.setChooseValue(contentTopicCacheData[item.getContentId()])
+      }
+    })
   }
   private mounted () {
   }
   private nextTopic (index: number) {
     this.swiper.$swiper.slideTo(index + 1, 1000, false)
+  }
+  private async asyncCache () {
+    // 保存key=contentId value=chooseValue
+    const cacheData = {}
+    this.dataList.forEach(item => {
+      if (item.getChooseValue()) {
+        cacheData[item.getContentId()] = item.getChooseValue()
+      }
+    })
+    const history = await LocalForageUtil.getPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId) as any[]
+    const newList = [{ date: new Date().getTime(), data: cacheData }]
+    if (JSHelperUtil.isNullOrUndefined(history)) {
+      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId, newList)
+    } else {
+      const list = history.slice(0, 100)
+      list.unshift(newList[0])
+      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId, list)
+    }
+  }
+  private async asyncRemote () {
+    this.asyncRemoteData = new AlbumCourseProblemUpdateRequest()
+    this.asyncRemoteData.setAlbumCourseProblemId(this.albumCourseProblemId)
+    const list: ProblemContentTopicRequest[] = []
+    this.asyncRemoteData.setProblemContentTopicList(list)
+    this.dataList.forEach(item => {
+      const problemContentTopicRequest = new ProblemContentTopicRequest()
+      problemContentTopicRequest.setContentId(item.getContentId())
+      problemContentTopicRequest.setChooseValue(item.getChooseValue())
+      list.push(problemContentTopicRequest)
+    })
+  }
+  private async changeChoose (index: number) {
+    await this.asyncCache()
+    await this.asyncRemote()
   }
 }
 </script>

@@ -34,6 +34,12 @@ Mock.mock(/\/course-api\/front\/album\/course\/problem\/add(|\?\S*)$/, (req) => 
 })
 
 Mock.mock(/\/course-api\/front\/content\/topic\/by-album(|\?\S*)$/, (req) => {
-  return { 'code': '0', 'message': 'suc', 'data': [{ 'contentId': 1, 'title': '题目1', 'analysis': '题目1', 'topicType': 1, 'gradeAmount': 2, 'optionResponseList': [{ 'contentTopicSelectOptionId': 1, 'optionLabel': '选项1' }, { 'contentTopicSelectOptionId': 2, 'optionLabel': '选项2' }, { 'contentTopicSelectOptionId': 3, 'optionLabel': '选项3' }] }, { 'contentId': 2, 'title': '题目2', 'analysis': '题目2', 'topicType': 1, 'gradeAmount': 2, 'optionResponseList': [{ 'contentTopicSelectOptionId': 1, 'optionLabel': '选项1' }, { 'contentTopicSelectOptionId': 2, 'optionLabel': '选项2' }, { 'contentTopicSelectOptionId': 3, 'optionLabel': '选项3' }] }] }
+  return { 'code': '0', 'message': 'suc', 'data': [{ 'contentId': 1, 'title': '题目1', 'analysis': '题目1', 'topicType': 1, 'gradeAmount': 2, 'optionResponseList': [{ 'contentTopicSelectOptionId': 1, 'optionLabel': '选项1' }, { 'contentTopicSelectOptionId': 2, 'optionLabel': '选项2' }, { 'contentTopicSelectOptionId': 3, 'optionLabel': '选项3' }] }, { 'contentId': 2, 'title': '题目2', 'analysis': '题目2', 'topicType': 1, 'gradeAmount': 2, 'optionResponseList': [{ 'contentTopicSelectOptionId': 4, 'optionLabel': '选项1' }, { 'contentTopicSelectOptionId': 5, 'optionLabel': '选项2' }, { 'contentTopicSelectOptionId': 6, 'optionLabel': '选项3' }] }, { 'contentId': 3, 'title': '题目3', 'analysis': '题目3', 'topicType': 1, 'gradeAmount': 2, 'optionResponseList': [{ 'contentTopicSelectOptionId': 7, 'optionLabel': '选项1' }, { 'contentTopicSelectOptionId': 8, 'optionLabel': '选项2' }, { 'contentTopicSelectOptionId': 9, 'optionLabel': '选项3' }] }] }
+})
+Mock.mock(/\/course-api\/front\/album\/course\/problem\/topic\/list(|\?\S*)$/, (req) => {
+  return { 'code': '0', 'message': 'suc', 'data': [] }
+})
+Mock.mock(/\/course-api\/front\/album\/course\/problem\/update(|\?\S*)$/, (req) => {
+  return { 'code': '0', 'message': 'suc', 'data': 1 }
 })
 export default Mock

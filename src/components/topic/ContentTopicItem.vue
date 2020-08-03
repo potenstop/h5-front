@@ -102,9 +102,9 @@ export default class ContentTopicItem extends Vue {
   private toggleExclusiveList: number[] = []
   private created () {
     if (ContentTopicConstant.TYPE_SIGN_SELECT === this.data.getTopicType()) {
-      if (isNaN(+this.data.getChooseValue())) {
+      if (!isNaN(+this.data.getChooseValue())) {
         this.data.getOptionResponseList().forEach((item, index) => {
-          if (item.getContentId() === +this.data.getChooseValue()) {
+          if (item.getContentTopicSelectOptionId() === +this.data.getChooseValue()) {
             this.toggleExclusive = index
           }
         })
@@ -144,8 +144,9 @@ export default class ContentTopicItem extends Vue {
       this.data.setChooseValue('')
     } else {
       this.$emit('on-next-topic')
-      this.data.setChooseValue(this.data.getOptionResponseList()[this.toggleExclusive].getContentId().toString())
+      this.data.setChooseValue(this.data.getOptionResponseList()[this.toggleExclusive].getContentTopicSelectOptionId().toString())
     }
+    this.$emit('on-change-choose')
   }
   private async changeChooseValueList (value: number | undefined) {
     if (JSHelperUtil.isNullOrUndefined(value)) {
@@ -156,6 +157,7 @@ export default class ContentTopicItem extends Vue {
         map.set(index, item.getContentId())
       })
     }
+    this.$emit('on-change-choose')
   }
 }
 </script>
