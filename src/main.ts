@@ -11,11 +11,18 @@ import 'view-design/dist/styles/iview.css'
 import VueScroller from 'vue-scroller'
 import '../public/style.css'
 import 'katex/dist/katex.min.css'
+import SvgIcon from '@/components/icon/SvgIcon.vue' // svg组件
 import router from './router'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
 Vue.use(VueScroller)
+// svg ---start
+Vue.component('svg-icon', SvgIcon)
+const requireAll = requireContext => requireContext.keys().map(requireContext)
+const req = require.context('./icons/svg', false, /\.svg$/)
+requireAll(req)
+// svg ---stop
 
 // if (process.env.NODE_ENV !== 'production') {
 require('@/mock/UserMock')

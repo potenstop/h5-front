@@ -46,10 +46,8 @@
           align="center"
           @click="$router.push(item.path)"
         >
-          <v-avatar color="indigo" size="60">
-            <v-icon dark size="32">mdi-account-circle</v-icon>
-          </v-avatar>
-          <v-col cols="12" sm="8">
+          <svg-icon :icon-class="item.icon"></svg-icon>
+          <v-col cols="12" sm="10" style="font-size: 12px; color: #808080">
             {{item.text}}
           </v-col>
         </v-col>
@@ -91,20 +89,44 @@ export default class DefaultHome extends Vue {
   ]
   private navigationIconList = [
     {
-      text: '答题历史',
-      path: '/album/answer/history'
-    },
-    {
-      text: '真题模考',
-      path: '/album/answer/old-exam'
-    },
-    {
-      text: '错题练习',
-      path: '/album/answer/history'
+      text: '智能练习',
+      path: '/album/answer/history',
+      icon: 'default-tab-zhinenglianxi'
     },
     {
       text: '章节练习',
-      path: '/album/answer/history'
+      path: '/album/answer/history',
+      icon: 'default-tab-zhengjielianxi'
+    },
+    {
+      text: '真题模考',
+      path: '/album/answer/old-exam',
+      icon: 'default-tab-zhentimokao'
+    },
+    {
+      text: '巩固模考',
+      path: '/album/answer/history',
+      icon: 'default-tab-gonggumokao'
+    },
+    {
+      text: '高频数据',
+      path: '/album/answer/history',
+      icon: 'default-tab-gaopinshuju'
+    },
+    {
+      text: '教材练习',
+      path: '/album/answer/history',
+      icon: 'default-tab-jiaocailianxi'
+    },
+    {
+      text: '收藏',
+      path: '/album/answer/history',
+      icon: 'default-tab-shoucan'
+    },
+    {
+      text: '精品三卷',
+      path: '/album/answer/history',
+      icon: 'default-tab-jingpinsanjuan'
     }
   ]
   private async created () {
