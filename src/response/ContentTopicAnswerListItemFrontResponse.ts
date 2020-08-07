@@ -26,6 +26,8 @@ export class ContentTopicAnswerListItemFrontResponse {
   private optionResponseList: ContentTopicSelectOptionResponse[]
   @JsonProperty
   private chooseValue: string
+  @JsonProperty
+  private favorites: number
   public getContentId (): number {
     return this.contentId
   }
@@ -67,5 +69,13 @@ export class ContentTopicAnswerListItemFrontResponse {
   }
   public setChooseValue (chooseValue: string): void {
     this.chooseValue = chooseValue
+  }
+
+  public getFavorites (): number {
+    return this.favorites
+  }
+
+  public setFavorites (favorites: number) {
+    this.favorites = favorites
   }
 }

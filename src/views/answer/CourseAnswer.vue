@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-    <swiper ref="swiper" :options="swiperOptions" class="main-div">
+    <swiper ref="swiper" :options="swiperOptions" class="main-div" @slideChange="changCurrentTopicIndex">
       <swiper-slide v-for="(item, i) in dataList" :key="i">
         <content-topic-item
           :data="item"
@@ -11,6 +11,32 @@
         ></content-topic-item>
       </swiper-slide>
     </swiper>
+    <v-footer app style="padding: 0">
+      <v-btn-toggle
+      light
+      dense
+      background-color="grey lighten-5"
+      borderless
+      style="width: 100%"
+    >
+      <v-btn :height="btnHeight" width="25%" @click="clickFavorites">
+        <!--          <v-icon color="blue darken-2">mdi-star-outline</v-icon>-->
+        <v-icon color="blue darken-2">mdi-star</v-icon>
+      </v-btn>
+
+      <v-btn :height="btnHeight" width="25%">
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
+
+      <v-btn :height="btnHeight" width="25%">
+        <v-icon>mdi-upload-multiple</v-icon>
+      </v-btn>
+
+      <v-btn :height="btnHeight" width="25%">
+        <v-icon>mdi-share-variant</v-icon>
+      </v-btn>
+    </v-btn-toggle>
+    </v-footer>
   </div>
 </template>
 <script lang="ts">
@@ -28,6 +54,7 @@ import { CollectionUtils } from 'papio-h5/lib/util/CollectionUtils'
 import moment from 'moment'
 import { AlbumCourseProblemUpdateRequest } from '@/request/AlbumCourseProblemUpdateRequest'
 import { ProblemContentTopicRequest } from '@/request/ProblemContentTopicRequest'
+import { CommonConstant } from '@/common/constant/CommonConstant'
 
 const courseApi = new CourseApi()
 @Component({
@@ -48,6 +75,9 @@ export default class CourseAnswer extends Vue {
     }
   }
   private asyncRemoteData: AlbumCourseProblemUpdateRequest = null
+  private btnHeight = 46
+  // 当前滑动的下标
+  private currentTopicIndex = 0
   private async created () {
     const query = this.$route.query as any
     this.albumId = query.albumId
@@ -183,6 +213,17 @@ export default class CourseAnswer extends Vue {
   private async changeChoose (index: number) {
     await this.asyncCache()
     await this.asyncRemote()
+  }
+  private async clickFavorites () {
+    const currentContentTopic = this.dataList[this.currentTopicIndex]
+    if (CommonConstant.TRUE === currentContentTopic.getFavorites()) {
+      // 取消收藏
+    } else {
+      // 收藏
+    }
+  }
+  private async changCurrentTopicIndex () {
+    this.currentTopicIndex = this.swiper.$swiper.activeIndex
   }
 }
 </script>

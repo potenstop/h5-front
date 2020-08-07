@@ -45,11 +45,12 @@
           justify="center"
           align="center"
           @click="$router.push(item.path)"
+          cols="3"
         >
           <svg-icon :icon-class="item.icon"></svg-icon>
-          <v-col cols="12" sm="10" style="font-size: 12px; color: #808080">
+          <div class="ma-n2 text-caption text--secondary">
             {{item.text}}
-          </v-col>
+          </div>
         </v-col>
       </v-row>
     </v-container>

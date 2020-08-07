@@ -82,7 +82,7 @@ export default [
   {
     path: '/answer',
     name: 'Answer',
-    component: AnswerOverall,
+    component: BlankOverall,
     children: [
       {
         path: 'course',
