@@ -21,7 +21,7 @@
     >
       <v-btn :height="btnHeight" width="25%" @click="clickFavorites">
         <!--          <v-icon color="blue darken-2">mdi-star-outline</v-icon>-->
-        <v-icon color="blue darken-2">mdi-star</v-icon>
+        <v-icon color="blue darken-2" v-text="footerIsfavorites ? 'mdi-star' : 'mdi-star-outline'"></v-icon>
       </v-btn>
 
       <v-btn :height="btnHeight" width="25%">
@@ -43,6 +43,7 @@
 import { Component, Vue, Ref } from 'vue-property-decorator'
 import { ApiUtil } from '@/common/util/ApiUtil'
 import { CourseApi } from '@/dao/api/CourseApi'
+import { CmsApi } from '@/dao/api/CmsApi'
 import { JSHelperUtil, StringUtil } from 'papio-h5'
 import { ContentTopicAnswerListItemFrontResponse } from '@/response/ContentTopicAnswerListItemFrontResponse'
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
@@ -55,8 +56,12 @@ import moment from 'moment'
 import { AlbumCourseProblemUpdateRequest } from '@/request/AlbumCourseProblemUpdateRequest'
 import { ProblemContentTopicRequest } from '@/request/ProblemContentTopicRequest'
 import { CommonConstant } from '@/common/constant/CommonConstant'
+import { FavoritesAddRequest } from '@/request/FavoritesAddRequest'
+import { BusinessLineTypeConstant } from '@/common/constant/BusinessLineTypeConstant'
+import { FavoritesConstant } from '@/common/constant/FavoritesConstant'
 
 const courseApi = new CourseApi()
+const cmsApi = new CmsApi()
 @Component({
   components: {
     ContentTopicItem,
@@ -78,6 +83,7 @@ export default class CourseAnswer extends Vue {
   private btnHeight = 46
   // 当前滑动的下标
   private currentTopicIndex = 0
+  private footerIsfavorites = false
   private async created () {
     const query = this.$route.query as any
     this.albumId = query.albumId
@@ -107,6 +113,7 @@ export default class CourseAnswer extends Vue {
     }
     await this.initData()
     await this.startAsyncRemote()
+    await this.changCurrentTopicIndex()
   }
   private async startAsyncRemote () {
     setInterval(async () => {
@@ -216,14 +223,24 @@ export default class CourseAnswer extends Vue {
   }
   private async clickFavorites () {
     const currentContentTopic = this.dataList[this.currentTopicIndex]
-    if (CommonConstant.TRUE === currentContentTopic.getFavorites()) {
+    const request = new FavoritesAddRequest()
+    request.setTableName(BusinessLineTypeConstant.TABLE_NAME_COURSE_CONTENT)
+    request.setClientId(FavoritesConstant.CLIENT_H5)
+    request.setBusinessLineId(currentContentTopic.getContentId() + '')
+    if (this.footerIsfavorites) {
       // 取消收藏
+      await cmsApi.favoritesCancel(request)
+      this.footerIsfavorites = false
     } else {
       // 收藏
+      await cmsApi.favoritesAdd(request)
+      this.footerIsfavorites = true
     }
   }
   private async changCurrentTopicIndex () {
     this.currentTopicIndex = this.swiper.$swiper.activeIndex
+    const currentContentTopic = this.dataList[this.currentTopicIndex]
+    this.footerIsfavorites = currentContentTopic.getFavorites() === CommonConstant.TRUE
   }
 }
 </script>
