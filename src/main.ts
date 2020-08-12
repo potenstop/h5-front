@@ -25,8 +25,8 @@ requireAll(req)
 // svg ---stop
 
 // if (process.env.NODE_ENV !== 'production') {
-// require('@/mock/UserMock')
-// require('@/mock/CourseMock')
+require('@/mock/UserMock')
+require('@/mock/CourseMock')
 // }
 Vue.prototype.$Message = Message
 new Vue({

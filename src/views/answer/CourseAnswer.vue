@@ -21,10 +21,10 @@
     >
       <v-btn :height="btnHeight" width="25%" @click="clickFavorites">
         <!--          <v-icon color="blue darken-2">mdi-star-outline</v-icon>-->
-        <v-icon color="blue darken-2" v-text="footerIsfavorites ? 'mdi-star' : 'mdi-star-outline'"></v-icon>
+        <v-icon color="blue darken-2" v-text="footerIsFavorites ? 'mdi-star' : 'mdi-star-outline'"></v-icon>
       </v-btn>
 
-      <v-btn :height="btnHeight" width="25%">
+      <v-btn :height="btnHeight" width="25%" @click="clickList">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
 
@@ -44,24 +44,47 @@ import { Component, Vue, Ref } from 'vue-property-decorator'
 import { ApiUtil } from '@/common/util/ApiUtil'
 import { CourseApi } from '@/dao/api/CourseApi'
 import { CmsApi } from '@/dao/api/CmsApi'
-import { JSHelperUtil, StringUtil } from 'papio-h5'
+import { JSHelperUtil, JsonProperty, Min, NotNull, StringUtil } from 'papio-h5'
 import { ContentTopicAnswerListItemFrontResponse } from '@/response/ContentTopicAnswerListItemFrontResponse'
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import ContentTopicItem from '@/components/topic/ContentTopicItem.vue'
 import { AlbumCourseProblemAddRequest } from '@/request/AlbumCourseProblemAddRequest'
 import { LocalForageUtil } from '@/common/util/LocalForageUtil'
 import 'swiper/css/swiper.css'
-import { CollectionUtils } from 'papio-h5/lib/util/CollectionUtils'
-import moment from 'moment'
 import { AlbumCourseProblemUpdateRequest } from '@/request/AlbumCourseProblemUpdateRequest'
 import { ProblemContentTopicRequest } from '@/request/ProblemContentTopicRequest'
 import { CommonConstant } from '@/common/constant/CommonConstant'
 import { FavoritesAddRequest } from '@/request/FavoritesAddRequest'
 import { BusinessLineTypeConstant } from '@/common/constant/BusinessLineTypeConstant'
 import { FavoritesConstant } from '@/common/constant/FavoritesConstant'
+import AnswerTopicMixin from '@/components/mixin/AnswerTopicMixin'
+import { mixins } from 'vue-class-component'
+import ValidMixin from '@/components/mixin/ValidMixin'
 
 const courseApi = new CourseApi()
 const cmsApi = new CmsApi()
+class RouterQuery {
+  @JsonProperty
+  @NotNull
+  @Min(1)
+  private albumId: number
+  @JsonProperty
+  @NotNull
+  @Min(1)
+  private albumCourseProblemId: number
+  public getAlbumId (): number {
+    return this.albumId
+  }
+  public setAlbumId (albumId: number): void {
+    this.albumId = albumId
+  }
+  public getAlbumCourseProblemId (): number {
+    return this.albumCourseProblemId
+  }
+  public setAlbumCourseProblemId (albumCourseProblemId: number): void {
+    this.albumCourseProblemId = albumCourseProblemId
+  }
+}
 @Component({
   components: {
     ContentTopicItem,
@@ -69,12 +92,10 @@ const cmsApi = new CmsApi()
     SwiperSlide
   }
 })
-export default class CourseAnswer extends Vue {
+export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
   @Ref() readonly swiper!: any
   private name = 'CourseAnswer'
   private dataList: ContentTopicAnswerListItemFrontResponse[] = []
-  private albumId: number = null
-  private albumCourseProblemId: number = null
   private swiperOptions = {
     pagination: {
     }
@@ -83,35 +104,20 @@ export default class CourseAnswer extends Vue {
   private btnHeight = 46
   // 当前滑动的下标
   private currentTopicIndex = 0
-  private footerIsfavorites = false
+  private footerIsFavorites = false
+  private routerQuery: RouterQuery = null
   private async created () {
-    const query = this.$route.query as any
-    this.albumId = query.albumId
-    this.albumCourseProblemId = query.albumCourseProblemId
-    if (JSHelperUtil.isNotNull(this.albumId)) {
-      if (isNaN(+this.albumId)) {
-        this.$Message.warning('链接错误')
-        return
-      }
-      this.albumId = +this.albumId
-    } else {
-      this.$Message.warning('链接错误')
+    this.routerQuery = this.validQuery(RouterQuery)
+    if (this.routerQuery === null) {
       return
     }
-
-    if (JSHelperUtil.isNotNull(this.albumCourseProblemId)) {
-      if (isNaN(+this.albumId)) {
-        this.$Message.warning('链接错误')
-        return
-      }
-      this.albumCourseProblemId = +this.albumCourseProblemId
-    } else {
+    if (JSHelperUtil.isNullOrUndefined(this.routerQuery.getAlbumCourseProblemId())) {
       // 创建答题试卷
       const request = new AlbumCourseProblemAddRequest()
-      request.setAlbumId(this.albumId)
-      this.albumCourseProblemId = ApiUtil.getData(await courseApi.albumCourseProblemAdd(request))
+      request.setAlbumId(this.routerQuery.getAlbumId())
+      this.routerQuery.setAlbumCourseProblemId(ApiUtil.getData(await courseApi.albumCourseProblemAdd(request)))
     }
-    await this.initData()
+    this.dataList = await this.getTopicListAndAnswerValue(this.routerQuery.getAlbumCourseProblemId(), this.routerQuery.getAlbumId())
     await this.startAsyncRemote()
     await this.changCurrentTopicIndex()
   }
@@ -127,61 +133,6 @@ export default class CourseAnswer extends Vue {
       }
     }, 100)
   }
-  private async getContentTopicCacheData () {
-    // 获取本地的
-    const historyCacheDataList = await LocalForageUtil.getPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId) as any[]
-    let historyCacheData = null
-    if (CollectionUtils.isNotEmpty(historyCacheDataList)) {
-      historyCacheData = historyCacheDataList[0]
-    }
-    let remote: any = null
-    // 获取远程的
-    try {
-      const result = await courseApi.albumCourseProblemTopicList(this.albumCourseProblemId)
-      const albumCourseProblemTopicResponseList = ApiUtil.getData(result)
-      // 找出最大的时间
-      let maxTime = null
-      let data = {}
-      albumCourseProblemTopicResponseList.forEach(item => {
-        data[item.getContentId()] = item.getInputSelectOption()
-        const current = moment(item.getUpdateTime()).format('x')
-        if (!maxTime) {
-          maxTime = current
-        } else if (current > maxTime) {
-          maxTime = current
-        }
-      })
-      remote = {}
-      remote.date = maxTime
-      remote.data = data
-    } catch (e) {
-      this.$Message.warning('获取远程数据失败')
-    }
-    if (historyCacheData && !remote) {
-      return historyCacheData.data
-    } else if (!historyCacheData && remote) {
-      return remote.data
-    } else if (remote && historyCacheData) {
-      if (historyCacheData.date <= remote.date) {
-        return remote.data
-      } else {
-        return historyCacheData.data
-      }
-    } else {
-      return {}
-    }
-  }
-  private async initData () {
-    const contentTopicCacheData = await this.getContentTopicCacheData()
-    // 获取试卷的总的题目
-    this.dataList = ApiUtil.getData(await courseApi.contentTopicByAlbumId(this.albumId))
-    // 设置已答的题目
-    this.dataList.forEach((item, j) => {
-      if (item.getContentId() in contentTopicCacheData) {
-        item.setChooseValue(contentTopicCacheData[item.getContentId()])
-      }
-    })
-  }
   private mounted () {
   }
   private nextTopic (index: number) {
@@ -195,19 +146,19 @@ export default class CourseAnswer extends Vue {
         cacheData[item.getContentId()] = item.getChooseValue()
       }
     })
-    const history = await LocalForageUtil.getPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId) as any[]
+    const history = await LocalForageUtil.getPrefixItem('albumCourseProblemHistory' + this.routerQuery.getAlbumCourseProblemId()) as any[]
     const newList = [{ date: new Date().getTime(), data: cacheData }]
     if (JSHelperUtil.isNullOrUndefined(history)) {
-      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId, newList)
+      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.routerQuery.getAlbumCourseProblemId(), newList)
     } else {
       const list = history.slice(0, 100)
       list.unshift(newList[0])
-      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.albumCourseProblemId, list)
+      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.routerQuery.getAlbumCourseProblemId(), list)
     }
   }
   private async asyncRemote () {
     this.asyncRemoteData = new AlbumCourseProblemUpdateRequest()
-    this.asyncRemoteData.setAlbumCourseProblemId(this.albumCourseProblemId)
+    this.asyncRemoteData.setAlbumCourseProblemId(this.routerQuery.getAlbumCourseProblemId())
     const list: ProblemContentTopicRequest[] = []
     this.asyncRemoteData.setProblemContentTopicList(list)
     this.dataList.forEach(item => {
@@ -227,20 +178,25 @@ export default class CourseAnswer extends Vue {
     request.setTableName(BusinessLineTypeConstant.TABLE_NAME_COURSE_CONTENT)
     request.setClientId(FavoritesConstant.CLIENT_H5)
     request.setBusinessLineId(currentContentTopic.getContentId() + '')
-    if (this.footerIsfavorites) {
+    if (this.footerIsFavorites) {
       // 取消收藏
       await cmsApi.favoritesCancel(request)
-      this.footerIsfavorites = false
+      this.footerIsFavorites = false
     } else {
       // 收藏
       await cmsApi.favoritesAdd(request)
-      this.footerIsfavorites = true
+      this.footerIsFavorites = true
     }
   }
   private async changCurrentTopicIndex () {
     this.currentTopicIndex = this.swiper.$swiper.activeIndex
     const currentContentTopic = this.dataList[this.currentTopicIndex]
-    this.footerIsfavorites = currentContentTopic.getFavorites() === CommonConstant.TRUE
+    if (JSHelperUtil.isNotNull(currentContentTopic)) {
+      this.footerIsFavorites = currentContentTopic.getFavorites() === CommonConstant.TRUE
+    }
+  }
+  private async clickList () {
+    await this.$router.push('/answer/select-topic')
   }
 }
 </script>

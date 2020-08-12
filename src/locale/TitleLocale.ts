@@ -28,4 +28,7 @@ export class TitleLocale {
 
   @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '真题模考' }])
   public static readonly ANSWER_OLD_EXAM_ALBUM = prefix + 'ANSWER_OLD_EXAM_ALBUM'
+
+  @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '选择题目' }])
+  public static readonly SELECT_TOPIC_ANSWER = prefix + 'SELECT_TOPIC_ANSWER'
 }

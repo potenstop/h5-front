@@ -21,7 +21,7 @@
     "localforage": "^1.7.3",
     "mockjs": "^1.0.1-beta3",
     "moment": "^2.24.0",
-    "papio-h5": "0.0.9",
+    "papio-h5": "0.0.11",
     "register-service-worker": "^1.6.2",
     "swiper": "^5.4.5",
     "type-interface": "0.0.3",

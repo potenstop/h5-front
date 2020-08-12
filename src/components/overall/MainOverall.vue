@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main class="main-div">
+    <v-main>
       <v-container fluid class="main-div">
         <router-view></router-view>
       </v-container>
