@@ -92,15 +92,6 @@ export default [
           hasLogin: true
         },
         component: () => import('@/views/answer/CourseAnswer.vue')
-      },
-      {
-        path: 'select-topic',
-        name: 'SelectTopicAnswer',
-        meta: {
-          title: '{{SELECT_TOPIC_ANSWER}}',
-          hasLogin: true
-        },
-        component: () => import('@/views/answer/SelectTopicAnswer.vue')
       }
     ]
   },

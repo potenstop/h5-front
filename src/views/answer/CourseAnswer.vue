@@ -37,6 +37,7 @@
       </v-btn>
     </v-btn-toggle>
     </v-footer>
+    <select-topic-answer-modal @on-select-number="onSelectNumber"></select-topic-answer-modal>
   </div>
 </template>
 <script lang="ts">
@@ -60,6 +61,7 @@ import { FavoritesConstant } from '@/common/constant/FavoritesConstant'
 import AnswerTopicMixin from '@/components/mixin/AnswerTopicMixin'
 import { mixins } from 'vue-class-component'
 import ValidMixin from '@/components/mixin/ValidMixin'
+import SelectTopicAnswerModal from '@/components/modal/SelectTopicAnswerModal.vue'
 
 const courseApi = new CourseApi()
 const cmsApi = new CmsApi()
@@ -69,7 +71,6 @@ class RouterQuery {
   @Min(1)
   private albumId: number
   @JsonProperty
-  @NotNull
   @Min(1)
   private albumCourseProblemId: number
   public getAlbumId (): number {
@@ -89,7 +90,8 @@ class RouterQuery {
   components: {
     ContentTopicItem,
     Swiper,
-    SwiperSlide
+    SwiperSlide,
+    SelectTopicAnswerModal
   }
 })
 export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
@@ -196,7 +198,12 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
     }
   }
   private async clickList () {
-    await this.$router.push('/answer/select-topic')
+    this.$modal.show('select-topic-answer-modal', {
+      dataList: this.dataList
+    })
+  }
+  private async onSelectNumber (index: number) {
+    this.swiper.$swiper.slideTo(index, 0, false)
   }
 }
 </script>

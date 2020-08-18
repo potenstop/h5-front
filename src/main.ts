@@ -12,6 +12,7 @@ import VueScroller from 'vue-scroller'
 import '../public/style.css'
 import 'katex/dist/katex.min.css'
 import SvgIcon from '@/components/icon/SvgIcon.vue' // svg组件
+import VModal from 'vue-js-modal'
 import router from './router'
 
 Vue.config.productionTip = false
@@ -23,6 +24,13 @@ const requireAll = requireContext => requireContext.keys().map(requireContext)
 const req = require.context('./icons/svg', false, /\.svg$/)
 requireAll(req)
 // svg ---stop
+
+// vue modal start
+Vue.use(VModal, {
+  dialog: true,
+  dynamic: true
+})
+// vue modal stop
 
 // if (process.env.NODE_ENV !== 'production') {
 require('@/mock/UserMock')
