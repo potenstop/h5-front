@@ -51,6 +51,10 @@ import { Component, Vue } from 'vue-property-decorator'
 import { ContentTopicAnswerListItemFrontResponse } from '@/response/ContentTopicAnswerListItemFrontResponse'
 import SelectTopicNumberAlbum from '@/components/album/SelectTopicNumberAlbum.vue'
 import { ContentTopicConstant } from '@/common/constant/ContentTopicConstant'
+import { CourseApi } from '@/dao/api/CourseApi'
+import { ApiUtil } from '@/common/util/ApiUtil'
+
+const courseApi = new CourseApi()
 @Component({
   components: {
     SelectTopicNumberAlbum
@@ -59,6 +63,7 @@ import { ContentTopicConstant } from '@/common/constant/ContentTopicConstant'
 export default class SelectTopicAnswerModal extends Vue {
   private name = 'SelectTopicAnswerModal'
   private dataList: ContentTopicAnswerListItemFrontResponse[] = []
+  private albumCourseProblemId: number
   private signSelectDataList = []
   private mulSelectDataList = []
   private fillBlankDataList = []
@@ -97,14 +102,22 @@ export default class SelectTopicAnswerModal extends Vue {
       }
     })
   }
-  public async clickProceedTopic () {
+  public clickProceedTopic () {
     this.$modal.hide('select-topic-answer-modal')
   }
   public async clickSubmitProblem () {
-
+    const data = ApiUtil.getData(await courseApi.albumCourseProblemSubmit(this.albumCourseProblemId))
+    // 跳转至练习报告页
+    this.clickProceedTopic()
+    await this.$router.push({
+      path: '/answer/report',
+      query: {
+        albumCourseProblemId: this.albumCourseProblemId + ''
+      }
+    })
   }
   public async onSelectNumber (index: number) {
-    this.$modal.hide('select-topic-answer-modal')
+    this.clickProceedTopic()
     this.$emit('on-select-number', index)
   }
 }

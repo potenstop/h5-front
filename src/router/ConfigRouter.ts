@@ -92,6 +92,15 @@ export default [
           hasLogin: true
         },
         component: () => import('@/views/answer/CourseAnswer.vue')
+      },
+      {
+        path: 'report',
+        name: 'ReportAnswer',
+        meta: {
+          title: '{{TITLE_REPORT_ANSWER}}',
+          hasLogin: true
+        },
+        component: () => import('@/views/answer/ReportAnswer.vue')
       }
     ]
   },

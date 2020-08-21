@@ -1,6 +1,11 @@
 <template>
   <div class="main-div">
-    <swiper ref="swiper" :options="swiperOptions" class="main-div" @slideChange="changCurrentTopicIndex">
+    <swiper
+      ref="swiper"
+      :options="swiperOptions"
+      class="main-div"
+      @slideChange="changCurrentTopicIndex"
+    >
       <swiper-slide v-for="(item, i) in dataList" :key="i">
         <content-topic-item
           :data="item"
@@ -13,31 +18,36 @@
     </swiper>
     <v-footer app style="padding: 0">
       <v-btn-toggle
-      light
-      dense
-      background-color="grey lighten-5"
-      borderless
-      style="width: 100%"
-    >
-      <v-btn :height="btnHeight" width="25%" @click="clickFavorites">
-        <!--          <v-icon color="blue darken-2">mdi-star-outline</v-icon>-->
-        <v-icon color="blue darken-2" v-text="footerIsFavorites ? 'mdi-star' : 'mdi-star-outline'"></v-icon>
-      </v-btn>
+        light
+        dense
+        background-color="grey lighten-5"
+        borderless
+        style="width: 100%"
+      >
+        <v-btn :height="btnHeight" width="25%" @click="clickFavorites">
+          <!--          <v-icon color="blue darken-2">mdi-star-outline</v-icon>-->
+          <v-icon
+            color="blue darken-2"
+            v-text="footerIsFavorites ? 'mdi-star' : 'mdi-star-outline'"
+          ></v-icon>
+        </v-btn>
 
-      <v-btn :height="btnHeight" width="25%" @click="clickList">
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
+        <v-btn :height="btnHeight" width="25%" @click="clickList">
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
 
-      <v-btn :height="btnHeight" width="25%">
-        <v-icon>mdi-upload-multiple</v-icon>
-      </v-btn>
+        <v-btn :height="btnHeight" width="25%">
+          <v-icon>mdi-upload-multiple</v-icon>
+        </v-btn>
 
-      <v-btn :height="btnHeight" width="25%">
-        <v-icon>mdi-share-variant</v-icon>
-      </v-btn>
-    </v-btn-toggle>
+        <v-btn :height="btnHeight" width="25%">
+          <v-icon>mdi-share-variant</v-icon>
+        </v-btn>
+      </v-btn-toggle>
     </v-footer>
-    <select-topic-answer-modal @on-select-number="onSelectNumber"></select-topic-answer-modal>
+    <select-topic-answer-modal
+      @on-select-number="onSelectNumber"
+    ></select-topic-answer-modal>
   </div>
 </template>
 <script lang="ts">
@@ -69,10 +79,10 @@ class RouterQuery {
   @JsonProperty
   @NotNull
   @Min(1)
-  private albumId: number
+  private albumId: number;
   @JsonProperty
   @Min(1)
-  private albumCourseProblemId: number
+  private albumCourseProblemId: number;
   public getAlbumId (): number {
     return this.albumId
   }
@@ -95,38 +105,46 @@ class RouterQuery {
   }
 })
 export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
-  @Ref() readonly swiper!: any
-  private name = 'CourseAnswer'
-  private dataList: ContentTopicAnswerListItemFrontResponse[] = []
+  @Ref() readonly swiper!: any;
+  private name = 'CourseAnswer';
+  private dataList: ContentTopicAnswerListItemFrontResponse[] = [];
   private swiperOptions = {
-    pagination: {
-    }
-  }
-  private asyncRemoteData: AlbumCourseProblemUpdateRequest = null
-  private btnHeight = 46
+    pagination: {}
+  };
+  private asyncRemoteData: AlbumCourseProblemUpdateRequest = null;
+  private btnHeight = 46;
   // 当前滑动的下标
-  private currentTopicIndex = 0
-  private footerIsFavorites = false
-  private routerQuery: RouterQuery = null
+  private currentTopicIndex = 0;
+  private footerIsFavorites = false;
+  private routerQuery: RouterQuery = null;
   private async created () {
     this.routerQuery = this.validQuery(RouterQuery)
     if (this.routerQuery === null) {
       return
     }
-    if (JSHelperUtil.isNullOrUndefined(this.routerQuery.getAlbumCourseProblemId())) {
+    if (
+      JSHelperUtil.isNullOrUndefined(this.routerQuery.getAlbumCourseProblemId())
+    ) {
       // 创建答题试卷
       const request = new AlbumCourseProblemAddRequest()
       request.setAlbumId(this.routerQuery.getAlbumId())
-      this.routerQuery.setAlbumCourseProblemId(ApiUtil.getData(await courseApi.albumCourseProblemAdd(request)))
+      this.routerQuery.setAlbumCourseProblemId(
+        ApiUtil.getData(await courseApi.albumCourseProblemAdd(request))
+      )
     }
-    this.dataList = await this.getTopicListAndAnswerValue(this.routerQuery.getAlbumCourseProblemId(), this.routerQuery.getAlbumId())
+    this.dataList = await this.getTopicListAndAnswerValue(
+      this.routerQuery.getAlbumCourseProblemId(),
+      this.routerQuery.getAlbumId()
+    )
     await this.startAsyncRemote()
     await this.changCurrentTopicIndex()
   }
   private async startAsyncRemote () {
     setInterval(async () => {
       if (this.asyncRemoteData !== null) {
-        const result = await courseApi.albumCourseProblemUpdate(this.asyncRemoteData)
+        const result = await courseApi.albumCourseProblemUpdate(
+          this.asyncRemoteData
+        )
         if (result.getCode() !== '0' && +result.getCode() < 10000) {
           console.log('业务异常， 需要重试')
           throw new Error(result.getMessage())
@@ -135,8 +153,7 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
       }
     }, 100)
   }
-  private mounted () {
-  }
+  private mounted () {}
   private nextTopic (index: number) {
     this.swiper.$swiper.slideTo(index + 1, 1000, false)
   }
@@ -148,19 +165,31 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
         cacheData[item.getContentId()] = item.getChooseValue()
       }
     })
-    const history = await LocalForageUtil.getPrefixItem('albumCourseProblemHistory' + this.routerQuery.getAlbumCourseProblemId()) as any[]
+    const history = (await LocalForageUtil.getPrefixItem(
+      'albumCourseProblemHistory' + this.routerQuery.getAlbumCourseProblemId()
+    )) as any[]
     const newList = [{ date: new Date().getTime(), data: cacheData }]
     if (JSHelperUtil.isNullOrUndefined(history)) {
-      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.routerQuery.getAlbumCourseProblemId(), newList)
+      await LocalForageUtil.setPrefixItem(
+        'albumCourseProblemHistory' +
+          this.routerQuery.getAlbumCourseProblemId(),
+        newList
+      )
     } else {
       const list = history.slice(0, 100)
       list.unshift(newList[0])
-      await LocalForageUtil.setPrefixItem('albumCourseProblemHistory' + this.routerQuery.getAlbumCourseProblemId(), list)
+      await LocalForageUtil.setPrefixItem(
+        'albumCourseProblemHistory' +
+          this.routerQuery.getAlbumCourseProblemId(),
+        list
+      )
     }
   }
   private async asyncRemote () {
     this.asyncRemoteData = new AlbumCourseProblemUpdateRequest()
-    this.asyncRemoteData.setAlbumCourseProblemId(this.routerQuery.getAlbumCourseProblemId())
+    this.asyncRemoteData.setAlbumCourseProblemId(
+      this.routerQuery.getAlbumCourseProblemId()
+    )
     const list: ProblemContentTopicRequest[] = []
     this.asyncRemoteData.setProblemContentTopicList(list)
     this.dataList.forEach(item => {
@@ -194,12 +223,14 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
     this.currentTopicIndex = this.swiper.$swiper.activeIndex
     const currentContentTopic = this.dataList[this.currentTopicIndex]
     if (JSHelperUtil.isNotNull(currentContentTopic)) {
-      this.footerIsFavorites = currentContentTopic.getFavorites() === CommonConstant.TRUE
+      this.footerIsFavorites =
+        currentContentTopic.getFavorites() === CommonConstant.TRUE
     }
   }
   private async clickList () {
     this.$modal.show('select-topic-answer-modal', {
-      dataList: this.dataList
+      dataList: this.dataList,
+      albumCourseProblemId: this.routerQuery.getAlbumCourseProblemId()
     })
   }
   private async onSelectNumber (index: number) {
@@ -208,6 +239,4 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

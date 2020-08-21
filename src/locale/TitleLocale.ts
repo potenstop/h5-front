@@ -31,4 +31,7 @@ export class TitleLocale {
 
   @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '选择题目' }])
   public static readonly SELECT_TOPIC_ANSWER = prefix + 'SELECT_TOPIC_ANSWER'
+
+  @LocaleMapper([{ lang: LocaleLangConstant.ZH_CN, desc: '答题报告' }])
+  public static readonly REPORT_ANSWER = prefix + 'REPORT_ANSWER'
 }
