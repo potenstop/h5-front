@@ -13,7 +13,10 @@ import '../public/style.css'
 import 'katex/dist/katex.min.css'
 import SvgIcon from '@/components/icon/SvgIcon.vue' // svg组件
 import VModal from 'vue-js-modal'
+import vuescroll from 'vuescroll'
 import router from './router'
+
+Vue.component('vue-scroll', vuescroll)
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
@@ -33,8 +36,8 @@ Vue.use(VModal, {
 // vue modal stop
 
 // if (process.env.NODE_ENV !== 'production') {
-// require('@/mock/UserMock')
-// require('@/mock/CourseMock')
+require('@/mock/UserMock')
+require('@/mock/CourseMock')
 // }
 Vue.prototype.$Message = Message
 new Vue({

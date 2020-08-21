@@ -5,9 +5,13 @@
          @before-open="beforeOpen"
          transfer="nice-modal-fade"
   >
-    <v-card flat>
-      <v-card-text>
-        <v-container fluid class="pa-0">
+    <v-card
+      flat
+      class="main-div"
+    >
+      <vue-scroll>
+        <v-card-text>
+        <v-container class="pa-0">
           <select-topic-number-album
             title-name="单项选择题"
             :topic-number-list="signSelectDataList"
@@ -30,19 +34,18 @@
           ></select-topic-number-album>
         </v-container>
       </v-card-text>
-      <v-footer app class="pa-0">
-        <v-container class="grey lighten-5">
-          <v-row>
-            <v-col class="text-center">
-              <v-btn rounded color="success" dark class="pl-10 pr-10" @click="clickProceedTopic">继续答题</v-btn>
-            </v-col>
-            <v-col class="text-center">
-              <v-btn rounded color="blue-grey" dark class="pl-10 pr-10" @click="clickSubmitProblem">提交试卷</v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-footer>
+      </vue-scroll>
     </v-card>
+    <v-footer class="pa-0 ma-0" fixed max-height="70">
+      <v-row>
+        <v-col class="text-center">
+          <v-btn rounded color="success" dark class="pl-5 pr-5" @click="clickProceedTopic">继续答题</v-btn>
+        </v-col>
+        <v-col class="text-center">
+          <v-btn rounded color="blue-grey" dark class="pl-5 pr-5" @click="clickSubmitProblem">提交试卷</v-btn>
+        </v-col>
+      </v-row>
+    </v-footer>
   </modal>
 </template>
 
@@ -81,11 +84,11 @@ export default class SelectTopicAnswerModal extends Vue {
     this.dataList.forEach((item, index) => {
       const inputItem = {
         text: index + 1 + '',
-        index: index
+        index: index,
+        state: index % 5 + 1
       }
       switch (item.getTopicType()) {
         case ContentTopicConstant.TYPE_SIGN_SELECT:
-          console.log(111)
           this.signSelectDataList.push(inputItem)
           break
         case ContentTopicConstant.TYPE_MUL_SELECT:

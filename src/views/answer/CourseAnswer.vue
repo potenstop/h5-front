@@ -37,7 +37,7 @@
         </v-btn>
 
         <v-btn :height="btnHeight" width="25%">
-          <v-icon>mdi-upload-multiple</v-icon>
+          11:00
         </v-btn>
 
         <v-btn :height="btnHeight" width="25%">
@@ -51,7 +51,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Ref } from 'vue-property-decorator'
+import { Component, Vue, Ref, Watch } from 'vue-property-decorator'
 import { ApiUtil } from '@/common/util/ApiUtil'
 import { CourseApi } from '@/dao/api/CourseApi'
 import { CmsApi } from '@/dao/api/CmsApi'
@@ -72,6 +72,7 @@ import AnswerTopicMixin from '@/components/mixin/AnswerTopicMixin'
 import { mixins } from 'vue-class-component'
 import ValidMixin from '@/components/mixin/ValidMixin'
 import SelectTopicAnswerModal from '@/components/modal/SelectTopicAnswerModal.vue'
+import TimerMixin from '@/components/mixin/TimerMixin'
 
 const courseApi = new CourseApi()
 const cmsApi = new CmsApi()
@@ -104,7 +105,7 @@ class RouterQuery {
     SelectTopicAnswerModal
   }
 })
-export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
+export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin, TimerMixin) {
   @Ref() readonly swiper!: any;
   private name = 'CourseAnswer';
   private dataList: ContentTopicAnswerListItemFrontResponse[] = [];
@@ -114,9 +115,10 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
   private asyncRemoteData: AlbumCourseProblemUpdateRequest = null;
   private btnHeight = 46;
   // 当前滑动的下标
-  private currentTopicIndex = 0;
-  private footerIsFavorites = false;
-  private routerQuery: RouterQuery = null;
+  private currentTopicIndex = 0
+  private footerIsFavorites = false
+  private routerQuery: RouterQuery = null
+  private answerTimer: number = null
   private async created () {
     this.routerQuery = this.validQuery(RouterQuery)
     if (this.routerQuery === null) {
@@ -138,6 +140,7 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
     )
     await this.startAsyncRemote()
     await this.changCurrentTopicIndex()
+    this.startSimpleTime()
   }
   private async startAsyncRemote () {
     setInterval(async () => {
@@ -235,6 +238,10 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin) {
   }
   private async onSelectNumber (index: number) {
     this.swiper.$swiper.slideTo(index, 0, false)
+  }
+  @Watch('simpleTimeByName.default', { immediate: true })
+  private simpleTimeByNameChanged () {
+    console.log(this.simpleTimeByName)
   }
 }
 </script>
