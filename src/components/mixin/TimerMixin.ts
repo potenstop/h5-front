@@ -8,67 +8,84 @@ import { Component, Vue } from 'vue-property-decorator'
  * @author yanshaowen
  * @date 2020/8/11 18:01
  */
+interface SimpleTimer {
+  state: boolean;
+  duration: number;
+  notice?: Function;
+}
+const defaultName = 'default'
 @Component
 export default class TimerMixin extends Vue {
-  public _defaultTimer: any = null
-  public _defaultCurrentS = 0
-  public _simpleOperateRecordByName = {}
-  public _simpleStateByName = {}
-  public simpleTimeByName = {}
+  public defaultTimer: any = null
+  public simpleTimerByName = new Map<string, SimpleTimer>()
 
   private beforeCreate () {
-    if (this._defaultTimer === null) {
-      this._defaultTimer = setInterval(() => {
-        this._defaultCurrentS++
+    if (this.defaultTimer === null || this.defaultTimer === undefined) {
+      this.defaultTimer = setInterval(() => {
         this.statistics()
       }, 1000)
     }
   }
-  public startSimpleTime (name?: string) {
-    if (name === null || name === undefined) {
-      name = 'default'
+  public startSimpleTime (name?: string | Function, notice?: Function) {
+    if (name === undefined || name === null) {
+      name = defaultName
+    } else if (name instanceof Function) {
+      notice = name
+      name = defaultName
     }
-    if (!(name in this._simpleOperateRecordByName)) {
-      this._simpleOperateRecordByName[name] = []
+    if (!this.simpleTimerByName.has(name)) {
+      const json: SimpleTimer = {
+        state: true,
+        duration: 0
+      }
+      if (notice) {
+        json.notice = notice
+      } else {
+        json.notice = null
+      }
+      this.simpleTimerByName.set(name, json)
+    } else {
+      this.simpleTimerByName.get(name).state = true
     }
-    if (!(name in this.simpleTimeByName)) {
-      this._simpleOperateRecordByName[name] = 0
-    }
-    this._simpleStateByName[name] = true
-    const current = this._simpleOperateRecordByName[name]
-    current.push({
-      start: this._defaultCurrentS
-    })
+    return true
   }
   public stopSimpleTime (name?: string): boolean {
     if (name === null || name === undefined) {
-      name = 'default'
+      name = defaultName
     }
-    if (!(name in this._simpleOperateRecordByName)) {
+    if (!this.simpleTimerByName.has(name)) {
       return false
+    } else {
+      this.simpleTimerByName.get(name).state = false
     }
-    if (!(name in this.simpleTimeByName)) {
+  }
+  public isSimpleStart (name?: string): boolean {
+    if (name === null || name === undefined) {
+      name = defaultName
+    }
+    if (!this.simpleTimerByName.has(name)) {
       return false
+    } else {
+      return this.simpleTimerByName.get(name).state
     }
-    this._simpleStateByName[name] = false
-    const current = this._simpleOperateRecordByName[name]
-    current[current.length - 1]['stop'] = this._defaultCurrentS
   }
   public releaseDefaultTimer () {
-    if (this._defaultTimer !== null) {
-      clearInterval(this._defaultTimer)
-      this._defaultTimer = null
+    if (this.defaultTimer !== null) {
+      clearInterval(this.defaultTimer)
+      this.defaultTimer = null
     }
   }
   public destroyed () {
     this.releaseDefaultTimer()
   }
   public async statistics () {
-    const nameList = Object.keys(this._simpleStateByName)
-    nameList.forEach(name => {
-      const state = this._simpleStateByName[name]
-      if (state && name in this.simpleTimeByName) {
-        this.simpleTimeByName[name] = this.simpleTimeByName[name] + 1
+    // const funcName = 'onTimer' + name.slice(0, 1).toUpperCase() + name.slice(1)
+    this.simpleTimerByName.forEach((value, key) => {
+      if (value.state) {
+        value.duration++
+        if (value.notice) {
+          value.notice(value.duration)
+        }
       }
     })
   }

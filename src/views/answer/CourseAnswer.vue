@@ -36,8 +36,8 @@
           <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-        <v-btn :height="btnHeight" width="25%">
-          11:00
+        <v-btn :height="btnHeight" width="25%" @click="clickAnswerTimer">
+          {{answerFormat}}
         </v-btn>
 
         <v-btn :height="btnHeight" width="25%">
@@ -118,7 +118,7 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin, T
   private currentTopicIndex = 0
   private footerIsFavorites = false
   private routerQuery: RouterQuery = null
-  private answerTimer: number = null
+  private answerFormat: string = '00:00'
   private async created () {
     this.routerQuery = this.validQuery(RouterQuery)
     if (this.routerQuery === null) {
@@ -140,7 +140,7 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin, T
     )
     await this.startAsyncRemote()
     await this.changCurrentTopicIndex()
-    this.startSimpleTime()
+    this.startSimpleTime(this.onTimerDefault)
   }
   private async startAsyncRemote () {
     setInterval(async () => {
@@ -239,9 +239,28 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin, T
   private async onSelectNumber (index: number) {
     this.swiper.$swiper.slideTo(index, 0, false)
   }
-  @Watch('simpleTimeByName.default', { immediate: true })
-  private simpleTimeByNameChanged () {
-    console.log(this.simpleTimeByName)
+  public onTimerDefault (value: number) {
+    const s = value % 60
+    const m = Math.floor(value / 60)
+    let str = ''
+    if (m < 10) {
+      str += `0${m}:`
+    } else {
+      str += `${m}:`
+    }
+    if (s < 10) {
+      str += `0${s}`
+    } else {
+      str += `${s}`
+    }
+    this.answerFormat = str
+  }
+  public async clickAnswerTimer () {
+    if (this.isSimpleStart()) {
+      this.stopSimpleTime()
+    } else {
+      this.startSimpleTime()
+    }
   }
 }
 </script>
