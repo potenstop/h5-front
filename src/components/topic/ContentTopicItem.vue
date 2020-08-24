@@ -52,7 +52,7 @@
       </div>
       <div v-else-if="2 === data.getTopicType()">
         <v-list flat>
-          <v-list-item-group v-model="toggleExclusive"  @change="changeChooseValueList" multiple>
+          <v-list-item-group v-model="toggleExclusiveList"  @change="changeChooseValueList" multiple>
             <v-list-item
                     v-for="(item, i) in data.getOptionResponseList()"
                     :key="i"

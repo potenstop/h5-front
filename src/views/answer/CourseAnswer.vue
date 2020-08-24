@@ -16,15 +16,17 @@
         ></content-topic-item>
       </swiper-slide>
     </swiper>
-    <v-footer app style="padding: 0">
+    <v-footer app class="pa-0">
       <v-btn-toggle
-        light
         dense
-        background-color="grey lighten-5"
         borderless
         style="width: 100%"
+        group
+        tile
+        color="primary"
+        text
       >
-        <v-btn :height="btnHeight" width="25%" @click="clickFavorites">
+        <v-btn :height="btnHeight" width="25%" @click="clickFavorites" class="text-center pa-0 ma-0">
           <!--          <v-icon color="blue darken-2">mdi-star-outline</v-icon>-->
           <v-icon
             color="blue darken-2"
@@ -32,15 +34,15 @@
           ></v-icon>
         </v-btn>
 
-        <v-btn :height="btnHeight" width="25%" @click="clickList">
+        <v-btn :height="btnHeight" width="25%" @click="clickList" class="text-center pa-0 ma-0">
           <v-icon>mdi-menu</v-icon>
         </v-btn>
 
-        <v-btn :height="btnHeight" width="25%" @click="clickAnswerTimer">
+        <v-btn :height="btnHeight" width="25%" @click="clickAnswerTimer" class="text-center pa-0 ma-0">
           {{answerFormat}}
         </v-btn>
 
-        <v-btn :height="btnHeight" width="25%">
+        <v-btn :height="btnHeight" width="25%" class="text-center pa-0 ma-0">
           <v-icon>mdi-share-variant</v-icon>
         </v-btn>
       </v-btn-toggle>
@@ -48,6 +50,9 @@
     <select-topic-answer-modal
       @on-select-number="onSelectNumber"
     ></select-topic-answer-modal>
+    <reset-answer-modal
+      @on-cancel-reset="onCancelReset"
+    ></reset-answer-modal>
   </div>
 </template>
 <script lang="ts">
@@ -73,6 +78,7 @@ import { mixins } from 'vue-class-component'
 import ValidMixin from '@/components/mixin/ValidMixin'
 import SelectTopicAnswerModal from '@/components/modal/SelectTopicAnswerModal.vue'
 import TimerMixin from '@/components/mixin/TimerMixin'
+import ResetAnswerModal from '@/components/modal/ResetAnswerModal.vue'
 
 const courseApi = new CourseApi()
 const cmsApi = new CmsApi()
@@ -102,7 +108,8 @@ class RouterQuery {
     ContentTopicItem,
     Swiper,
     SwiperSlide,
-    SelectTopicAnswerModal
+    SelectTopicAnswerModal,
+    ResetAnswerModal
   }
 })
 export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin, TimerMixin) {
@@ -258,9 +265,20 @@ export default class CourseAnswer extends mixins(AnswerTopicMixin, ValidMixin, T
   public async clickAnswerTimer () {
     if (this.isSimpleStart()) {
       this.stopSimpleTime()
+      const data = { totalTopic: 0, answerTopic: 0 }
+      data.totalTopic = this.dataList.length
+      this.dataList.forEach(item => {
+        if (item.getChooseValue() && item.getChooseValue().length > 0) {
+          data.answerTopic++
+        }
+      })
+      this.$modal.show('reset-answer-modal', data)
     } else {
       this.startSimpleTime()
     }
+  }
+  public async onCancelReset () {
+    this.startSimpleTime()
   }
 }
 </script>

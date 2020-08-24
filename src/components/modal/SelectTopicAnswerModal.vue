@@ -80,7 +80,6 @@ export default class SelectTopicAnswerModal extends Vue {
     this.mulSelectDataList = []
     this.fillBlankDataList = []
     this.shortAnswerDataList = []
-    console.log(this.dataList)
     this.dataList.forEach((item, index) => {
       const inputItem = {
         text: index + 1 + '',
