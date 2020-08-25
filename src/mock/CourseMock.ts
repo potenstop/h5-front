@@ -42,4 +42,7 @@ Mock.mock(/\/course-api\/front\/album\/course\/problem\/topic\/list(|\?\S*)$/, (
 Mock.mock(/\/course-api\/front\/album\/course\/problem\/update(|\?\S*)$/, (req) => {
   return { 'code': '0', 'message': 'suc', 'data': 1 }
 })
+Mock.mock(/\/course-api\/front\/album\/course\/problem\/submit(|\?\S*)$/, (req) => {
+  return { 'code': '0', 'message': 'suc', 'data': 1 }
+})
 export default Mock
