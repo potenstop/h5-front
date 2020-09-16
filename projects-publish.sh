@@ -1,4 +1,4 @@
 git pull
 npm install
-rm -rf /site/h5
+rm -rf /site/mis
 npm run deploy
